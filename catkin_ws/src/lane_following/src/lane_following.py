@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
-
+#TO DO: import proper ros library and message
 import time
-import rospy
-from geometry_msgs.msg import Twist
-from sensor_msgs.msg import Image
 import numpy as np
 import cv2
 import sys
 from collections import namedtuple
 import math
 from math import floor, atan2, pi, cos, sin, sqrt
-from cv_bridge import CvBridge, CvBridgeError
 
 
 #########################################################################
@@ -452,84 +448,70 @@ def inverse_kinematics(v,omega):
     return vel_right,vel_left
 # FUNCTIONS FOR INVERSE KINEMATICS: END
 ########################################################################
-pub = None
 def callback(data):
-    global pub
-    bridge=CvBridge()
-    try:
-        velocity = Twist()
+	##TO DO: Given callback data (image), process the image for line detection and publish motor message
+	#This function runs whenever receive a message as subscriber
+	# frame = **** #Deserialize data to cv2 image first 
+
+    prev_time = time.time()
+    iteration_times = []
+    predict_times = []
+
+        
+    # print("Get-image: "+str(time.time() - prev_time))
+    
+    # Detect Lines and Return detected normed line segments and normals
+    lns_white, nrmls_white, lns_yellow, nrmls_yellow, lns_red, nrmls_red, image = detect_lines(frame)               
+    # print(lns_white, lns_yellow)
+    
+    # If there is no line detected, stop the car.
+    if not len(lns_white)>0 and not len(lns_yellow)>0:
+    	#TO DO: stop the vehicle
         prev_time = time.time()
-        iteration_times = []
-        predict_times = []
-        cv_image=bridge.imgmsg_to_cv2(data, "bgr8")
+        return
+    # Convert image points to Ground Frame Coordinate points (+x:ahead, +y:left)
+    p_lns_white, p_lns_yellow, p_lns_red  = ground_projection(lns_white, lns_yellow, lns_red)
+    # print(p_lns_yellow)
+    
+    # Calculate phi and d from detected lines(+d: left of lane, -d: right of lane, +phi: towards yellow, -phi: towards white)
+    d,phi,in_lane = lane_filter(p_lns_white, p_lns_yellow)
+    #print(d,phi,in_lane)
 
-        frame = cv_image
-            
-        # print("Get-image: "+str(time.time() - prev_time))
-        
-        # Detect Lines and Return detected normed line segments and normals
-        lns_white, nrmls_white, lns_yellow, nrmls_yellow, lns_red, nrmls_red, image = detect_lines(frame)               
-        # print(lns_white, lns_yellow)
-        
-        # If there is no line detected, stop the car.
-        if not len(lns_white)>0 and not len(lns_yellow)>0:
-            velocity.linear.y,velocity.linear.x = (0,0)
-            pub.publish(velocity)
-            # rate.sleep()
-            prev_time = time.time()
-            return
-        # Convert image points to Ground Frame Coordinate points (+x:ahead, +y:left)
-        p_lns_white, p_lns_yellow, p_lns_red  = ground_projection(lns_white, lns_yellow, lns_red)
-        # print(p_lns_yellow)
-        
-        # Calculate phi and d from detected lines(+d: left of lane, -d: right of lane, +phi: towards yellow, -phi: towards white)
-        d,phi,in_lane = lane_filter(p_lns_white, p_lns_yellow)
-        #print(d,phi,in_lane)
-
-        # If d or phi could not be find, stop the car.
-        if d is None or phi is None or in_lane is None:
-            # car.setWheelsSpeed(0,0)
-            prev_time = time.time()
-
-            return
-        
-        # print("Predict: "+str(time.time() - prev_time))
-        predict_times.append(time.time() - prev_time)             
-        
-        # Calculate w(omega) and v from d and phi
-        v,w = lane_controller(d,phi)
-        # print(v,w)
-        
-        # Calculate inverse kinematics to find each wheel speed
-        velocity.linear.y,velocity.linear.x = inverse_kinematics(v,w)
-        print("vel_left: " + str(velocity.linear.x) + ", vel_right: " + str(velocity.linear.y))
-        
-        # Drive the car
-        pub.publish(velocity)
-        # rate.sleep()            
-        # car.setWheelsSpeed(0,0)
-        
-        # Calculate passed time rate
-        duration_rate = (time.time() - prev_time)
-        iteration_times.append(duration_rate)
+    # If d or phi could not be find, stop the car.
+    if d is None or phi is None or in_lane is None:
+        #TO DO: stop the vehicle
         prev_time = time.time()
+
+        return
+    
+    # print("Predict: "+str(time.time() - prev_time))
+    predict_times.append(time.time() - prev_time)             
+    
+    # Calculate w(omega) and v from d and phi
+    v,w = lane_controller(d,phi)
+    # print(v,w)
+    
+    # Calculate inverse kinematics to find each wheel speed
+    vel_right,vel_left = inverse_kinematics(v,w)
+    print("vel_left: " + str(vel_left) + ", vel_right: " + str(vel_right))
+    
+    # Drive the car
+    # TO DO: publish message to drive motor
+
+    
+    # Calculate passed time rate
+    duration_rate = (time.time() - prev_time)
+    iteration_times.append(duration_rate)
+    prev_time = time.time()
+    
+    # Print the fps
+    # print("Rate: "+str(duration_rate))
         
-        # Print the fps
-        # print("Rate: "+str(duration_rate))
-        
-    except CvBridgeError as e:
-        print(e)
 
 
 def main():
-    global pub
+	##TO DO: Initialize ROS node, ROS publisher and subscriber, and make it run indefinetly
 
-    rospy.init_node('lane_following', anonymous=True)
-    pub = rospy.Publisher('motor_command', Twist, queue_size=0)
-    sub = rospy.Subscriber("raspicam_node/image",Image,callback)
-    rate = rospy.Rate(10)
-    rospy.spin()
-        
 
 if __name__ == '__main__':
     main()

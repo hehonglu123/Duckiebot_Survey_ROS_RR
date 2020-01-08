@@ -4,8 +4,7 @@ Created on Wed May  8 17:32:18 2019
 
 @author: BurakAksoy
 """
-
-from RobotRaconteur.Client import *
+#TO DO: import proper Robot Raconteur library
 
 import time
 import thread
@@ -21,58 +20,16 @@ from math import floor, atan2, pi, cos, sin, sqrt
 #Function to take the data structure returned from the Webcam service
 #and convert it to an OpenCV array
 def WebcamImageToMat(image):
-    frame2=image.data.reshape([image.height, image.width, 3], order='C')
-    return frame2
+    #TO DO: Deserialize image
 
 #This function is called when a new pipe packet arrives
 current_frame=None
 def new_frame(pipe_ep):
-    global current_frame
-    #Loop to get the newest frame
-    while (pipe_ep.Available > 0):
-        #Receive the packet
-        image=pipe_ep.ReceivePacket()
-        #Convert the packet to an image and set the global variable
-        current_frame=WebcamImageToMat(image)
-# This function connects to camera, starts streaming and updates the current frame in current_frame
+	# This function connects to camera, starts streaming and updates the current frame in current_frame
+    #TO DO: update current frame, refer to SimpleWebcamClient_streaming.py
 
-def connect_camera(url):
-    #Startup, connect, and pull out the camera from the objref
-    RRN.UseNumPy=True
-    c_host=RRN.ConnectService(url)
-    c=c_host.get_Webcams(0)
-    #Connect the pipe FrameStream to get the PipeEndpoint p
-    p=c.FrameStream.Connect(-1)
-    #Set the callback for when a new pipe packet is received to the new_frame function
-    p.PacketReceivedEvent+=new_frame
-    try:
-        c.StartStreaming()
-    except: pass
-    return p,c
-    
-def connect_camera2(url):
-    #Startup, connect, and pull out the camera from the objref
-    RRN.UseNumPy=True
-    c_host=RRN.ConnectService(url)
-    c=c_host.get_Webcams(0)
-    return c
 
-def disconnect_camera(p,c):
-    p.Close()
-    c.StopStreaming()
-# FUNCTIONS FOR CAMERA RR: END
-########################################################################
 
-#########################################################################
-# FUNCTIONS FOR DRIVE RR: BEGIN
-def connect_drive(url,username,password):
-    #Instruct Robot Raconteur to use NumPy
-    RRN.UseNumPy=True
-    #Connect to the service
-    c=RRN.ConnectService(url,username,{"password":RR.RobotRaconteurVarValue(password,"string")})
-    return c
-# FUNCTIONS FOR DRIVE RR: END
-########################################################################
 
 #########################################################################
 # FUNCTIONS FOR LINE DETECTION: BEGIN
@@ -515,15 +472,7 @@ def inverse_kinematics(v,omega):
 ########################################################################
 
 def main():
-    url_cam = 'rr+tcp://duckielu:2355?service=Webcam'
-    url_drive = 'rr+tcp://duckielu:2356?service=Drive'
-
-    # Connect to camera and start streaming on global current_frame variable
-    # p,cam = connect_camera(url_cam)
-    cam = connect_camera2(url_cam)
-    
-    # Connect to motors to drive
-    car = connect_drive(url_drive,"cats","cats111!")
+    #TO DO: connect to RR services (drive and picam)
     
     is_view = False
     start=time.time()
@@ -553,7 +502,7 @@ def main():
                 
                 # If there is no line detected, stop the car.
                 if not len(lns_white)>0 and not len(lns_yellow)>0:
-                    car.setWheelsSpeed(0,0)
+                    #TO DO: stop the vehicle
                     prev_time = time.time()
                     continue
                 # Convert image points to Ground Frame Coordinate points (+x:ahead, +y:left)
@@ -566,7 +515,7 @@ def main():
 
                 # If d or phi could not be find, stop the car.
                 if d is None or phi is None or in_lane is None:
-                    # car.setWheelsSpeed(0,0)
+                    #TO DO: stop the vehicle
                     prev_time = time.time()
                     continue
                 
@@ -581,9 +530,9 @@ def main():
                 vel_right,vel_left = inverse_kinematics(v,w)
                 print("vel_left: " + str(vel_left) + ", vel_right: " + str(vel_right))
                 
-                # Drive the car
-                car.setWheelsSpeed(vel_left,vel_right)
-                # car.setWheelsSpeed(0,0)
+                # TO DO: Drive the car
+                
+                
                 
                 # Calculate passed time rate
                 duration_rate = (time.time() - prev_time)
@@ -615,8 +564,8 @@ def main():
     print("Avr. predict: " + str(avr_predict_times))
 
     print('Shutting Down..')
-    car.setWheelsSpeed(0,0)
-    # disconnect_camera(p,cam)
+    #TO DO: stop the vehicle
+
 
 if __name__ == '__main__':
     main()
