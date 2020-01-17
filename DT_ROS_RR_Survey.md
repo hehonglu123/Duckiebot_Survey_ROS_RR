@@ -8,7 +8,7 @@ Robot Raconteur is an object oriented Service-Client middleware. An RR service g
 To get a good understanding of Robot Raconteur, we’ll demonstrate how RR works on duckiebot with keyboard teleop. 
 ### RR Service:
 The RR service for duckiebot is to control both motors. Inside `duckiebot/RobotRaconteur/DuckiebotRR-Service-Drive.py`, there is RR robdef called `drive_servicedef`
-'''
+```
 drive_servicedef="""
 	#Service to provide sample interface to the Duckiebot Drive
 	service experimental.duckiebot
@@ -26,22 +26,22 @@ drive_servicedef="""
 	
 	end object
 	"""
-'''
+```
   You could consider this as a python class object declaration with variables and functions, but it’s also necessary to create an actual python class object including those variables/functions or some others that you don’t need on client side. In short, variables and functions inside **robdef** are the ones you have access to on client side. Inside class object **DaguWheelsDriver**, the PWM output is specified here to control the motor speed. Note that the motor doesn’t have a wheel encoder, so the values here doesn’t mean the actual velocity of the wheel speed. 
-  At the bottom of the file, which is the main part for Robot Raconteur, we have 'with RR.ServerNodeSetup("Drive_Service",2356) as node_setup:'
-'Drive_Service' here is the node name, and 2356 is the port for TCP communication. The object is initialized by 'obj=DaguWheelsDriver()'
+  At the bottom of the file, which is the main part for Robot Raconteur, we have `with RR.ServerNodeSetup("Drive_Service",2356) as node_setup:`
+`Drive_Service` here is the node name, and 2356 is the port for TCP communication. The object is initialized by `obj=DaguWheelsDriver()`
 The major difference for Robot Raconteur is that it has security over service. The password is hashed and a username is also required to connect to the service. 
-'authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"'
+`authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"`
 Here the username is **cats** and password is **cats111!**. 
 To expose the service over network, the service is registered through
-'''
+```
 RRN.RegisterServiceType(drive_servicedef)
 RRN.RegisterService("Drive","experimental.duckiebot.Drive",obj,security)
-'''
-So in this case the service name is called 'Drive', and the object type, the actual object and security is exposed together with the service.
-'raw_input()' is just a function to hold the service run indefinitely, and if the user wants to terminate the service, just press 'Enter' key and the service will shutdown. In order to use Robot Raconteur library as RR service, it’s necessary to import RR library at start:
-'''
+```
+So in this case the service name is called `Drive`, and the object type, the actual object and security is exposed together with the service.
+`raw_input()` is just a function to hold the service run indefinitely, and if the user wants to terminate the service, just press `Enter` key and the service will shutdown. In order to use Robot Raconteur library as RR service, it’s necessary to import RR library at start:
+```
 import RobotRaconteur as RR
 RRN=RR.RobotRaconteurNode.s
-'''
+```
 ### RR Client
