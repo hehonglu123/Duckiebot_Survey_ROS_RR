@@ -7,7 +7,7 @@ In this survey, we want students to learn and compare robotics middleware: widel
 Robot Raconteur is an object oriented Service-Client middleware. An RR service generally runs with a sensor/robot to have communication directly with them. An RR client usually can receive sensor messages from service and call object function to command the robot. Take a look into given webcam examples on https://github.com/robotraconteur/RobotRaconteur_Python_Examples. Try connecting a webcam to your Ubuntu laptop, running SimpleWebcamService.py and SimpleWebcamClient_streaming.py to get a live window streaming your webcam. 
 To get a good understanding of Robot Raconteur, we’ll demonstrate how RR works on duckiebot with keyboard teleop. 
 ### RR Service:
-The RR service for duckiebot is to control both motors. Inside 'duckiebot/RobotRaconteur/DuckiebotRR-Service-Drive.py', there is RR robdef called 'drive_servicedef'
+The RR service for duckiebot is to control both motors. Inside `duckiebot/RobotRaconteur/DuckiebotRR-Service-Drive.py`, there is RR robdef called `drive_servicedef`
 '''
 drive_servicedef="""
 	#Service to provide sample interface to the Duckiebot Drive
