@@ -1,4 +1,3 @@
-Forked from https://github.com/UbiquityRobotics/raspicam_node, working for ROS Melodic
 # raspicam_node
 
 ROS node for the Raspberry Pi Camera Module. Works with both the V1.x and V2.x versions of the module. We recommend using the v2.x cameras as they have better auto gain, and the general image quality is better.
@@ -7,12 +6,12 @@ ROS node for the Raspberry Pi Camera Module. Works with both the V1.x and V2.x v
 
 A binary can be found at https://packages.ubiquityrobotics.com/ follow the instructions there to add the repository.
 
-Then run `sudo apt install ros-melodic-raspicam-node`
+Then run `sudo apt install ros-kinetic-raspicam-node`
 
 ## Build Intructions
 If you want to build from source instead of using the binary follow this section.
 
-This node is primarily supported on ROS Melodic, and Ubuntu 18.04, and that is what these instuctions presume.
+This node is primarily supported on ROS Kinetic, and Ubuntu 16.04, and that is what these instuctions presume.
 
 Go to your catkin_ws `cd ~/catkin_ws/src`.
 
@@ -31,7 +30,7 @@ Install the ros dependencies,
 
 ```
 cd ~/catkin_ws
-rosdep install --from-paths src --ignore-src --rosdistro=melodic -y --skip-keys libraspberrypi0 
+rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
 ```
 
 Compile the code with `catkin_make`.
