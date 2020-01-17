@@ -1,6 +1,6 @@
 # Duckiebot ROS and RR Survey
 ## Introduction
-In this survey, we want students to learn and compare robotics middleware: widely used [Robot Operating System](http://wiki.ros.org/) (ROS) and [Robot Raconteur](https://www.robotraconteur.com/) (RR) designed by RPI alumni. Given a duckiebot with Ubuntu Mate (18.04) image, the goal is to use ROS and Robot Raconteur to achieve lane following.
+In this survey, we want students to learn and compare robotics middleware: widely used [Robot Operating System](http://wiki.ros.org/) (ROS) and [Robot Raconteur](https://www.robotraconteur.com/) (RR) designed by RPI alumni. Given a duckiebot with [Ubuntu Mate (18.04)](https://ubuntu-mate.org/blog/ubuntu-mate-bionic-final-release/) image, the goal is to use ROS and Robot Raconteur to achieve lane following.
 ## Duckiebot
 [Duckiebot](https://www.duckietown.org/) is a wheeled robot with 2 motors, one Raspberry Pi, a motor HAT and a Pi Camera. You have the control over 2 motor wheels and read image or video from Pi Cam. Please follow Duckiebot Setup Guide before proceeding.
 ## Robot Raconteur Tutorial
@@ -47,7 +47,7 @@ RRN=RR.RobotRaconteurNode.s
 ### RR Client
 The example for RR client is duckiebot keyboard control. Pygame is used as a virtual joystick here, and to instally pygame, simply type `$ pip install pygame`.  Inside `duckiebot/RobotRaconteur/Keyboard_Teleop/keyboard.py`, the major part is pygame visualization. At the bottom part of this script, there is
 ```
-	url='rr+tcp://duckielu:2356?service=Drive'
+url='rr+tcp://duckielu:2356?service=Drive'
 c=RRN.ConnectService(url,"cats",{"password":RR.RobotRaconteurVarValue("cats111!","string")})
 ```
 The url is the IP address of duckiebot, the port the service is on and the service name. In the argument of **ConnectService**, we also specify the username and password to connect to the service. The return variable for this function is the object created in service, so you can simply modify the duckiebot wheel speed by calling `c.setWheelsSpeed(0.5,0.5)`. And this is demonstrated in each key press inside the `loop()` function. In order to use Robot Raconteur library as RR service, it’s necessary to import RR client library at start: 
@@ -66,7 +66,7 @@ The structure of ROS is a little different from Robot Raconteur. First it has th
 To initiate a ROS communication from laptop to the duckiebot, it’s necessary to identify which one is ROS_MASTER. This can be done on both side by 
 `$ export ROS_MASTER_URI=http://hostname:11311`
 , where the hostname is the laptop’s hostname or IP address. Once this is done, you can look up this value by 
-`$ echo $ROS_MASTER_URI`
+`$ echo ROS_MASTER_URI`
 to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side.
 ### ROS Subscriber
 The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `duckiebot/catkin_ws/src/motor_control/src/motor_control.py`. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
@@ -132,4 +132,4 @@ $ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
 ```
 Note that the command roslaunch will bring up a roscore, so you could launch Picam first and then run other rospy scripts. To stop a script, simple press `ctrl+c`.
 ### Task
-You are provided with ROS subscriber motor_control.py for motor command and ROS publisher for image publishing. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the #TO DO sections.
+You are provided with ROS subscriber motor_control.py for motor command and ROS publisher for image publishing. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the `#TO DO` sections.
