@@ -29,7 +29,7 @@ drive_servicedef="""
 ```
   You could consider this as a python class object declaration with variables and functions, but it’s also necessary to create an actual python class object including those variables/functions or some others that you don’t need on client side. In short, variables and functions inside **robdef** are the ones you have access to on client side. Inside class object **DaguWheelsDriver**, the PWM output is specified here to control the motor speed. Note that the motor doesn’t have a wheel encoder, so the values here doesn’t mean the actual velocity of the wheel speed. 
   At the bottom of the file, which is the main part for Robot Raconteur, we have `with RR.ServerNodeSetup("Drive_Service",2356) as node_setup:`
-`Drive_Service` here is the node name, and 2356 is the port for TCP communication. The object is initialized by `obj=DaguWheelsDriver()`
+`Drive_Service` here is the node name, and `2356` is the port for TCP communication. The object is initialized by `obj=DaguWheelsDriver()`
 The major difference for Robot Raconteur is that it has security over service. The password is hashed and a username is also required to connect to the service. 
 `authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"`
 Here the username is **cats** and password is **cats111!**. 
@@ -45,3 +45,18 @@ import RobotRaconteur as RR
 RRN=RR.RobotRaconteurNode.s
 ```
 ### RR Client
+	The example for RR client is duckiebot keyboard control. Pygame is used as a virtual joystick here, and to instally pygame, simply type `$ pip install pygame`.  Inside `duckiebot/RobotRaconteur/Keyboard_Teleop/keyboard.py`, the major part is pygame visualization. At the bottom part of this script, there is
+```
+	url='rr+tcp://duckielu:2356?service=Drive'
+c=RRN.ConnectService(url,"cats",{"password":RR.RobotRaconteurVarValue("cats111!","string")})
+```
+The url is the IP address of duckiebot, the port the service is on and the service name. In the argument of **ConnectService**, we also specify the username and password to connect to the service. The return variable for this function is the object created in service, so you can simply modify the duckiebot wheel speed by calling `c.setWheelsSpeed(0.5,0.5)`. And this is demonstrated in each key press inside the `loop()` function. In order to use Robot Raconteur library as RR service, it’s necessary to import RR client library at start: 
+```
+from RobotRaconteur.Client import *
+```
+### Running RR
+	Once the scripts are ready to run, simply run it as a python script, and it’s necessary to start the service first and then client.
+### Task
+	You are provided with `Duckiebot-RR-Service-Drive.py` and `Duckiebot-RR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. All the scripts should be running on the duckiebot side. The usage of `Duckiebot-RR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections.
+
+## ROS Tutorial
