@@ -45,7 +45,7 @@ import RobotRaconteur as RR
 RRN=RR.RobotRaconteurNode.s
 ```
 ### RR Client
-	The example for RR client is duckiebot keyboard control. Pygame is used as a virtual joystick here, and to instally pygame, simply type `$ pip install pygame`.  Inside `duckiebot/RobotRaconteur/Keyboard_Teleop/keyboard.py`, the major part is pygame visualization. At the bottom part of this script, there is
+The example for RR client is duckiebot keyboard control. Pygame is used as a virtual joystick here, and to instally pygame, simply type `$ pip install pygame`.  Inside `duckiebot/RobotRaconteur/Keyboard_Teleop/keyboard.py`, the major part is pygame visualization. At the bottom part of this script, there is
 ```
 	url='rr+tcp://duckielu:2356?service=Drive'
 c=RRN.ConnectService(url,"cats",{"password":RR.RobotRaconteurVarValue("cats111!","string")})
@@ -55,8 +55,81 @@ The url is the IP address of duckiebot, the port the service is on and the servi
 from RobotRaconteur.Client import *
 ```
 ### Running RR
-	Once the scripts are ready to run, simply run it as a python script, and it’s necessary to start the service first and then client.
+Once the scripts are ready to run, simply run it as a python script, and it’s necessary to start the service first and then client.
 ### Task
-	You are provided with `Duckiebot-RR-Service-Drive.py` and `Duckiebot-RR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. All the scripts should be running on the duckiebot side. The usage of `Duckiebot-RR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections.
+You are provided with `Duckiebot-RR-Service-Drive.py` and `Duckiebot-RR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. All the scripts should be running on the duckiebot side. The usage of `Duckiebot-RR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections.
 
 ## ROS Tutorial
+The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. In our case the subscriber is on the duckiebot, listening to the speed command messages from remote Ubuntu laptop. And obviously the Ubuntu laptop is the publisher, so that user can publish command toward the duckiebot. Another relationship in ROS is Master-Slave. In order to use ROS in python, it’s necessary to `import rospy` at the start of each script.
+
+### ROS Master
+To initiate a ROS communication from laptop to the duckiebot, it’s necessary to identify which one is ROS_MASTER. This can be done on both side by 
+`$ export ROS_MASTER_URI=http://hostname:11311`
+, where the hostname is the laptop’s hostname or IP address. Once this is done, you can look up this value by 
+`$ echo $ROS_MASTER_URI`
+to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side.
+### ROS Subscriber
+The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `duckiebot/catkin_ws/src/motor_control/src/motor_control.py`. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
+```
+rospy.init_node('motor_control', anonymous=True)
+rospy.Subscriber("motor_command", Twist, callback)
+```
+Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely.
+
+### ROS Publisher
+The example for ROS publisher on laptop side is to send motor command over to the subscriber on the duckiebot side. Inside `duckiebot/catkin_ws/src/motor_control/src/keyboard.py`, it’s again similar to the RR client. At the bottom part of this script, 
+```
+pub = rospy.Publisher('motor_command', Twist, queue_size=0)
+```
+This line initialize the ROS publisher, publishing to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The queue_size is the buffer size for publishing. 
+```
+rospy.init_node('motor_command', anonymous=True)
+```
+This line is the same as the one in subscriber, which initialize the ROS node named *motor_command*.
+```
+rate = rospy.Rate(10)
+```
+And here the rate specifies the publishing rate.
+Inside the `loop()` function is where the `Twist()` message is composed. 
+```
+velocity = Twist()
+velocity.linear.x=0
+velocity.linear.y=0
+```
+The `velocity.linear.x` and `velocity.linear.y` corresponds to left and right wheel velocity respectively. And each loop the composed message is published out by 
+```
+pub.publish(velocity)
+```
+### Picam Node ROS
+You are also provided with a ROS node for image publishing, forked from https://github.com/UbiquityRobotics/raspicam_node. To get it running, first run 
+```
+$ sudo apt install ros-melodic-raspicam-node
+```
+Then add the following line 
+```
+yaml https://raw.githubusercontent.com/UbiquityRobotics/rosdep/master/raspberry-pi.yaml
+```
+to the file `/etc/ros/rosdep/sources.list.d/30-ubiquity.list`.
+Then run 
+```
+$ rosdep update
+$ cd ~/Duckiebot_Survey/catkin_ws
+$ rosdep install --from-paths src --ignore-src --rosdistro=melodic -y –skip-keys libraspberrypi0
+```
+The rostopic name should be *raspicam_node/image* and the message type is [sensor_msgs/Image.msg](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Image.html). Remember you can always find current topic by 
+```
+$ rostopic list
+```
+### Running ROS
+Once you have all scripts ready, build all of them by 
+```
+$ cd ~/Duckiebot_Survey/catkin_ws
+$ catkin_make
+```
+For rospy scripts, simply running it in python works with a roscore on. For roscpp scripts like Picam node, there’s usually a launch file to bring everything up:
+```
+$ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
+```
+Note that the command roslaunch will bring up a roscore, so you could launch Picam first and then run other rospy scripts. To stop a script, simple press `ctrl+c`.
+### Task
+You are provided with ROS subscriber motor_control.py for motor command and ROS publisher for image publishing. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the #TO DO sections.
