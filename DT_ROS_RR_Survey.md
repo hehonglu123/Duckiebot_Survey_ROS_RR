@@ -125,6 +125,7 @@ Once you have all scripts ready, build all of them by
 ```
 $ cd ~/Duckiebot_Survey/catkin_ws
 $ catkin_make
+$ source devel/setup.bash
 ```
 For rospy scripts, simply running it in python works with a roscore on. For roscpp scripts like Picam node, there’s usually a launch file to bring everything up:
 ```
