@@ -45,7 +45,7 @@ import RobotRaconteur as RR
 RRN=RR.RobotRaconteurNode.s
 ```
 ### RR Client
-The example for RR client is duckiebot keyboard control. Pygame is used as a virtual joystick here, and to instally pygame, simply type `$ pip install pygame`.  Inside `duckiebot/RobotRaconteur/Keyboard_Teleop/keyboard.py`, the major part is pygame visualization. At the bottom part of this script, there is
+The example for RR client is duckiebot keyboard control. Pygame is used as a virtual joystick here, and to instally pygame, simply type `$ pip install pygame`.  Inside `Duckiebot_Survey/RobotRaconteur/Keyboard_Teleop/keyboard.py`, the major part is pygame visualization. At the bottom part of this script, there is
 ```
 url='rr+tcp://duckielu:2356?service=Drive'
 c=RRN.ConnectService(url,"cats",{"password":RR.RobotRaconteurVarValue("cats111!","string")})
@@ -69,7 +69,7 @@ To initiate a ROS communication from laptop to the duckiebot, it’s necessary t
 `$ echo $ROS_MASTER_URI`
 to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side.
 ### ROS Subscriber
-The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `duckiebot/catkin_ws/src/motor_control/src/motor_control.py`. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
+The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `Duckiebot_Survey/catkin_ws/src/motor_control/src/motor_control.py`. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
 ```
 rospy.init_node('motor_control', anonymous=True)
 rospy.Subscriber("motor_command", Twist, callback)
@@ -77,7 +77,7 @@ rospy.Subscriber("motor_command", Twist, callback)
 Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely.
 
 ### ROS Publisher
-The example for ROS publisher on laptop side is to send motor command over to the subscriber on the duckiebot side. Inside `duckiebot/catkin_ws/src/motor_control/src/keyboard.py`, it’s again similar to the RR client. At the bottom part of this script, 
+The example for ROS publisher on laptop side is to send motor command over to the subscriber on the duckiebot side. Inside `Duckiebot_Survey/catkin_ws/src/motor_control/src/keyboard.py`, it’s again similar to the RR client. At the bottom part of this script, 
 ```
 pub = rospy.Publisher('motor_command', Twist, queue_size=0)
 ```
