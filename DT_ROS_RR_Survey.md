@@ -70,21 +70,22 @@ You are provided with `Duckiebot-RR-Service-Drive.py` and `Duckiebot-RR-Service-
 The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. In our case the subscriber is on the duckiebot, listening to the speed command messages from remote Ubuntu laptop. And obviously the Ubuntu laptop is the publisher, so that user can publish command toward the duckiebot. Another relationship in ROS is Master-Slave. In order to use ROS in python, it’s necessary to `import rospy` at the start of each script.
 
 ### ROS Master
-To initiate a ROS communication from laptop to the duckiebot, it’s necessary to identify which one is ROS_MASTER. This can be done on both side by 
-`$ export ROS_MASTER_URI=http://hostname:11311`
+To initiate a ROS communication from laptop to the duckiebot, it’s necessary to identify which one is ROS_MASTER. This needs to be done on both side by 
+`$ export ROS_MASTER_URI=http://<hostname>:11311`
 , where the hostname is the laptop’s hostname or IP address. Once this is done, you can look up this value by 
 `$ echo $ROS_MASTER_URI`
-to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side.
+to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side. So for the keyboard control example, open up three terminals, with one `ssh` into the duckiebot, and type in above command in all three terminals. Start a **roscore** in one terminal by typing `$ roscore`.
 ### ROS Subscriber
-The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `Duckiebot_Survey/catkin_ws/src/motor_control/src/motor_control.py`. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
+The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `Duckiebot_Survey/catkin_ws/src/motor_control/src/motor_control.py` on the duckiebot side. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
 ```
 rospy.init_node('motor_control', anonymous=True)
 rospy.Subscriber("motor_command", Twist, callback)
 ```
-Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely.
+Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely. To run this subscriber, simply type in 
+`$ python motor_control.py`
 
 ### ROS Publisher
-The example for ROS publisher on laptop side is to send motor command over to the subscriber on the duckiebot side. Inside `Duckiebot_Survey/catkin_ws/src/motor_control/src/keyboard.py`, it’s again similar to the RR client. At the bottom part of this script, 
+The example for ROS publisher on laptop side is to send motor command over to the subscriber on the duckiebot side. Inside `Duckiebot_Survey/catkin_ws/src/motor_control/src/keyboard.py` on laptop side, it’s again similar to the RR client. At the bottom part of this script, 
 ```
 pub = rospy.Publisher('motor_command', Twist, queue_size=0)
 ```
@@ -107,6 +108,10 @@ The `velocity.linear.x` and `velocity.linear.y` corresponds to left and right wh
 ```
 pub.publish(velocity)
 ```
+To run this publisher, simply type 
+`$ python keyboard.py` 
+in the terminal. Try playing with the keyboard control and see how messages are published and subscribed between laptop and duckiebot.
+
 ### Picam Node ROS
 You are also provided with a ROS node for image publishing, forked from https://github.com/UbiquityRobotics/raspicam_node. To get it running, first run 
 ```
@@ -134,10 +139,17 @@ $ cd ~/Duckiebot_Survey/catkin_ws
 $ catkin_make
 $ source devel/setup.bash
 ```
-For rospy scripts, simply running it in python works with a roscore on. For roscpp scripts like Picam node, there’s usually a launch file to bring everything up:
+For rospy scripts, simply running it in python works with a **roscore** on. For roscpp scripts like Picam node, there’s usually a launch file to bring everything up:
 ```
 $ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
 ```
-Note that the command roslaunch will bring up a roscore, so you could launch Picam first and then run other rospy scripts. To stop a script, simple press `ctrl+c`.
+Note that the command roslaunch will bring up a **roscore**, so you could launch Picam first and then run other rospy scripts. To stop a script, simple press `ctrl+c`.
 ### Task
-You are provided with ROS subscriber motor_control.py for motor command and ROS publisher for image publishing. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the `#TO DO` sections. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
+You are provided with ROS subscriber motor_control.py for motor command and ROS publisher for image publishing. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the `#TO DO` sections. The main part is to complete the publisher for motor command and subsciber for image. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot. 
+
+To test the scripts, open up three terminals and all `ssh` into the duckiebot. Go to `~/Duckiebot_Survey/catkin_ws` and run
+```
+$ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
+$ python src/motor_control/src/motor_control.py
+$ python src/lane_following/src/lane_following.py
+
