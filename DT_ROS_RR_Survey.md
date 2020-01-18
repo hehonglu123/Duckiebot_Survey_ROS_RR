@@ -56,6 +56,10 @@ from RobotRaconteur.Client import *
 ```
 ### Running RR
 Once the scripts are ready to run, simply run it as a python script, and it’s necessary to start the service first and then client.
+```
+python DuckiebotRR-Service-Drive.py 	#on duckiebot
+python keyboard.py		    	#on laptop
+```
 ### Task
 You are provided with `Duckiebot-RR-Service-Drive.py` and `Duckiebot-RR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. All the scripts should be running on the duckiebot side. The usage of `Duckiebot-RR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections.
 
