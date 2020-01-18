@@ -74,7 +74,8 @@ To initiate a ROS communication from laptop to the duckiebot, it’s necessary t
 `$ export ROS_MASTER_URI=http://<hostname>:11311`
 , where the hostname is the laptop’s hostname or IP address. Once this is done, you can look up this value by 
 `$ echo $ROS_MASTER_URI`
-to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side. So for the keyboard control example, open up three terminals, with one `ssh` into the duckiebot, and type in above command in all three terminals. Start a **roscore** in one terminal by typing `$ roscore`.
+to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side. This only needs to be done if you need ROS communication among different machines.
+So for the keyboard control example, we have communication between duckiebot and laptop. On the laptop side, open up three terminals, with one `ssh` into the duckiebot, and type in above command in all three terminals. Start a **roscore** in one terminal by typing `$ roscore`.
 ### ROS Subscriber
 The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `Duckiebot_Survey/catkin_ws/src/motor_control/src/motor_control.py` on the duckiebot side. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
 ```
