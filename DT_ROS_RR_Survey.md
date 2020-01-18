@@ -82,7 +82,9 @@ rospy.init_node('motor_control', anonymous=True)
 rospy.Subscriber("motor_command", Twist, callback)
 ```
 Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely. To run this subscriber, simply type in 
-`$ python motor_control.py`
+```
+$ python motor_control.py
+```
 
 ### ROS Publisher
 The example for ROS publisher on laptop side is to send motor command over to the subscriber on the duckiebot side. Inside `Duckiebot_Survey/catkin_ws/src/motor_control/src/keyboard.py` on laptop side, it’s again similar to the RR client. At the bottom part of this script, 
