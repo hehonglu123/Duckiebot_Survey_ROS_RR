@@ -47,10 +47,10 @@ RRN=RR.RobotRaconteurNode.s
 ### RR Client
 The example for RR client is duckiebot keyboard control. Pygame is used as a virtual joystick here, and to instally pygame, simply type `$ pip install pygame`.  Inside `Duckiebot_Survey/RobotRaconteur/Keyboard_Teleop/keyboard.py`, the major part is pygame visualization. At the bottom part of this script, there is
 ```
-url='rr+tcp://duckielu:2356?service=Drive'
+url='rr+tcp://<hostname>:2356?service=Drive'
 c=RRN.ConnectService(url,"cats",{"password":RR.RobotRaconteurVarValue("cats111!","string")})
 ```
-The url is the IP address of duckiebot, the port the service is on and the service name. In the argument of **ConnectService**, we also specify the username and password to connect to the service. The return variable for this function is the object created in service, so you can simply modify the duckiebot wheel speed by calling `c.setWheelsSpeed(0.5,0.5)`. And this is demonstrated in each key press inside the `loop()` function. In order to use Robot Raconteur library as RR service, it’s necessary to import RR client library at start: 
+The url is the IP address of duckiebot, the port the service is on and the service name. Replace `<hostname>` with the duckiebot hostname or IP address. In the argument of **ConnectService**, we also specify the username and password to connect to the service. The return variable for this function is the object created in service, so you can simply modify the duckiebot wheel speed by calling `c.setWheelsSpeed(0.5,0.5)`. And this is demonstrated in each key press inside the `loop()` function. In order to use Robot Raconteur library as RR service, it’s necessary to import RR client library at start: 
 ```
 from RobotRaconteur.Client import *
 ```
