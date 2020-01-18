@@ -66,7 +66,7 @@ The structure of ROS is a little different from Robot Raconteur. First it has th
 To initiate a ROS communication from laptop to the duckiebot, it’s necessary to identify which one is ROS_MASTER. This can be done on both side by 
 `$ export ROS_MASTER_URI=http://hostname:11311`
 , where the hostname is the laptop’s hostname or IP address. Once this is done, you can look up this value by 
-`$ echo ROS_MASTER_URI`
+`$ echo $ROS_MASTER_URI`
 to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side.
 ### ROS Subscriber
 The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `duckiebot/catkin_ws/src/motor_control/src/motor_control.py`. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
