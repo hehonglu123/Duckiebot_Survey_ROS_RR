@@ -82,7 +82,11 @@ The ROS script on the duckiebot contains a subscriber for motor command and a pu
 rospy.init_node('motor_control', anonymous=True)
 rospy.Subscriber("motor_command", Twist, callback)
 ```
-Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely. To run this subscriber, simply type in 
+Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). And import a ROS message type like Twist by 
+```
+from geometry_msgs.msg import Twist
+```
+The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely. To run this subscriber, simply type in 
 ```
 $ python motor_control.py
 ```
@@ -92,7 +96,7 @@ The example for ROS publisher on laptop side is to send motor command over to th
 ```
 pub = rospy.Publisher('motor_command', Twist, queue_size=0)
 ```
-This line initialize the ROS publisher, publishing to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The queue_size is the buffer size for publishing. 
+This line initialize the ROS publisher, publishing to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The queue_size is the buffer size for publishing.
 ```
 rospy.init_node('motor_command', anonymous=True)
 ```
