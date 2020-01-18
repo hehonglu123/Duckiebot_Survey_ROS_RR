@@ -156,6 +156,7 @@ You are provided with ROS subscriber motor_control.py for motor command and ROS 
 
 To test the scripts, open up three terminals and all `ssh` into the duckiebot. Go to `~/Duckiebot_Survey/catkin_ws` and run
 ```
+$ source devel/setup.bash
 $ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
 $ python src/motor_control/src/motor_control.py
 $ python src/lane_following/src/lane_following.py
