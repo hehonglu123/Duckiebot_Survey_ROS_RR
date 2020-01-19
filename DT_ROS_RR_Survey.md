@@ -64,7 +64,7 @@ python DuckiebotRR-Service-Drive.py 	#on duckiebot
 python Keyboard_Teleop/keyboard.py	#on laptop
 ```
 ### Task
-You are provided with `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. All the scripts should be running on the duckiebot side. The usage of `Duckiebot-RR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
+You are provided with `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. All the scripts should be running on the duckiebot side. The usage of `DuckiebotRR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
 
 ## ROS Tutorial
 The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. In our case the subscriber is on the duckiebot, listening to the speed command messages from remote Ubuntu laptop. And obviously the Ubuntu laptop is the publisher, so that user can publish command toward the duckiebot. Another relationship in ROS is Master-Slave. In order to use ROS in python, it’s necessary to `import rospy` at the start of each script.
