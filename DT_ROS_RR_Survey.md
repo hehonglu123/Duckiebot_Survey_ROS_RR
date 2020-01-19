@@ -86,7 +86,7 @@ Above lines initialize the ROS node name as *motor_control*, and subscribe to **
 ```
 from geometry_msgs.msg import Twist
 ```
-The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely. To run this subscriber, simply type in 
+The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely, applies to everything above it in main function. To run this subscriber, simply type in 
 ```
 $ python motor_control.py
 ```
