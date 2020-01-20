@@ -486,8 +486,10 @@ def main():
         
         while True:
             #Just loop resetting the frame
-            #This is not ideal but good enough for demonstration.  
-            current_frame=WebcamImageToMat(cam.CaptureFrame())          
+            #This is not ideal but good enough for demonstration. 
+
+            #TO DO: 
+            #set current_frame to deserialized image from picam service         
 
             if not current_frame is None: 
                 # print(current_frame)         
