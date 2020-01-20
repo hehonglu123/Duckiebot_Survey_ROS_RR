@@ -98,6 +98,7 @@ def listener():
 	
 	rospy.init_node('motor_control', anonymous=True)	
 	rospy.Subscriber("motor_command", Twist, callback, queue_size = 1, buff_size=2**24)
+	print('running')
 	rospy.spin()
 
 if __name__ == '__main__':
