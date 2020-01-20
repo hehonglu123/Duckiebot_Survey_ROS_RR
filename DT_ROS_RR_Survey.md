@@ -58,7 +58,7 @@ The url is the IP address of duckiebot, the port the service is on and the servi
 from RobotRaconteur.Client import *
 ```
 ### Running RR
-Once the scripts are ready to run, simply run it as a python script, and it’s necessary to start the service first and then client. So go to `~/Duckiebot_Survey/RobotRaconteur/` first, and run
+Once the scripts are ready to run, simply run it as a python script in a terminal, and it’s necessary to start the service first and then client. So go to `~/Duckiebot_Survey/RobotRaconteur/` first, and run
 ```
 python DuckiebotRR-Service-Drive.py 	#on duckiebot
 python Keyboard_Teleop/keyboard.py	#on laptop
