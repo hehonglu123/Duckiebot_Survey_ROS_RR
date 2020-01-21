@@ -64,7 +64,7 @@ python DuckiebotRR-Service-Drive.py 	#on duckiebot
 python Keyboard_Teleop/keyboard.py	#on laptop
 ```
 ### Task
-You are provided with `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. All the scripts should be running on the duckiebot side. The usage of `DuckiebotRR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
+You are provided with `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. The usage of `DuckiebotRR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections (search 'TO DO' by 'ctrl+F'). Both  `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py` should be running on the duckiebot, and `DuckiebotRR-Client-LaneFollower.py` should be running on the computer side. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
 
 ## ROS Tutorial
 The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. In our case the subscriber is on the duckiebot, listening to the speed command messages from remote Ubuntu laptop. And obviously the Ubuntu laptop is the publisher, so that user can publish command toward the duckiebot. Another relationship in ROS is Master-Slave. In order to use ROS in python, it’s necessary to `import rospy` at the start of each script.
@@ -152,12 +152,12 @@ $ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
 ```
 Note that the command roslaunch will bring up a **roscore**, so you could launch Picam first and then run other rospy scripts. To stop a script, simple press `ctrl+c`.
 ### Task
-You are provided with ROS subscriber motor_control.py for motor command and ROS publisher for image publishing. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the `#TO DO` sections. The main part is to complete the publisher for motor command and subsciber for image. Note that everything should be running on the duckiebot, and there's no need to set **ROS_MASTER_URI**. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot. 
+You are provided with ROS subscriber `motor_control.py` for motor command and ROS publisher for image publishing, they should be running on the duckiebot side. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the `#TO DO` sections (search 'TO DO' by 'ctrl+F'). The main part is to complete the publisher for motor command and subsciber for image. Make sure to set **ROS_MASTER_URI** on both duckiebot and computer.
 
-To test the scripts, open up three terminals and all `ssh` into the duckiebot. Go to `~/Duckiebot_Survey/catkin_ws` and run
+To test the scripts, open up three terminals and two `ssh` into the duckiebot. Go to `~/Duckiebot_Survey/catkin_ws` and run
 ```
-$ source devel/setup.bash
-$ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
-$ python src/motor_control/src/motor_control.py
-$ python src/lane_following/src/lane_following.py
+$ source devel/setup.bash						#in all terminals
+$ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true	#on duckiebot
+$ python src/motor_control/src/motor_control.py				#on duckiebot
+$ python src/lane_following/src/lane_following.py			#on computer
 
