@@ -88,7 +88,14 @@ Both Webcam service and client are ready to run, simply run it as a python scrip
 python SimpleWebcamService.py 	#on duckiebot
 python SimpleWebcamClient_streaming.py	#on laptop
 ```
-### Task
+### Task 1
+Given above examples for webcam service and client, write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html.
+
+
+### Task 2
+Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. After that, try create an RR client script on your laptop to drive the duckiebot remotely.
+
+
 You are provided with `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. The usage of `DuckiebotRR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections (search `TO DO` by `ctrl+F`). Both  `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py` should be running on the duckiebot, and `DuckiebotRR-Client-LaneFollower.py` should be running on the computer side. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
 
 ## ROS Tutorial
