@@ -71,15 +71,22 @@ As for the RR client `SimpleWebcamClient_streaming.py`, the first step is also t
 ```
 from RobotRaconteur.Client import *
 ```
-Inside `main()` function, 
-
-
+Inside `main()` function, it's necessary to specify the IP and port of the RR service, and it's done by
+```
+url='rr+tcp://<hostname>:<port>?service=Webcam'  
+c_host=RRN.ConnectService(url)
+```
+It's necessary to replace <hostname> and <port> with the actual ones the RR service is using (<hostname> can be replaced by IP address as well). Notice the variable `c_host` is of type `WebcamHost` in RR robdef, and the actual `Webcam` object is retrieved by
+```
+c=c_host.get_Webcams(0)
+```
+The line `p.PacketReceivedEvent+=new_frame` triggers the callback function `def new_frame(pipe_ep)`, which updates the global variable `current_frame` continuously. `c.StartStreaming()` starts the streaming process so the client receives the real-time image frame.
 
 ### Running RR
-Once the scripts are ready to run, simply run it as a python script in a terminal, and it’s necessary to start the service first and then client. So go to `~/Duckiebot_Survey/RobotRaconteur/` first, and run
+Both Webcam service and client are ready to run, simply run it as a python script in a terminal, and it’s necessary to start the service first and then client. So go to `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/` first, and run
 ```
-python DuckiebotRR-Service-Drive.py 	#on duckiebot
-python Keyboard_Teleop/keyboard.py	#on laptop
+python SimpleWebcamService.py 	#on duckiebot
+python SimpleWebcamClient_streaming.py	#on laptop
 ```
 ### Task
 You are provided with `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. The usage of `DuckiebotRR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections (search `TO DO` by `ctrl+F`). Both  `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py` should be running on the duckiebot, and `DuckiebotRR-Client-LaneFollower.py` should be running on the computer side. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
