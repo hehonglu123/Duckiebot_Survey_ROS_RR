@@ -18,7 +18,7 @@ class CameraNode(object):
         self.res_h = self.setupParam("~res_h",200)
 
         # TODO: load camera info yaml file and publish CameraInfo
-        self.pub_img= rospy.Publisher("~image_raw",Image,queue_size=1)
+        self.pub_img= rospy.Publisher("image_raw",Image,queue_size=1)
         
         self.has_published = False
 
@@ -51,10 +51,7 @@ class CameraNode(object):
         rval,img_data = self.camera.read()
         if rval:
             # Publish raw image
-            data = np.fromstring(img_data, dtype=np.uint8)
-
-            image = cv2.imdecode(data, 1)
-            image_msg = self.bridge.cv2_to_imgmsg(image)
+            image_msg = self.bridge.cv2_to_imgmsg(img_data)
                     
             image_msg.header.stamp = rospy.Time.now()
             # Publish 
