@@ -138,7 +138,7 @@ Try running this publisher simply by
 ```
 python Example_Webcam_Pub.py
 ```
-On the other terminal, type in  `rostopic list`, and you should see *image_raw* listed below. Then try `rostopic echo /image_raw`, this will display the message on this topic in the terminal. You can always check what topic is available by this technique.
+On the other terminal, type in  `rostopic list`, and you should see *image_raw* listed below. Then try `rostopic echo /image_raw`, this will display the message on this topic in the terminal. You can always check what topic is available by this technique. To stop a running ROS script, simply press `ctrl+c`. 
 
 ### ROS Subscriber
 The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `Duckiebot_Survey/catkin_ws/src/motor_control/src/motor_control.py` on the duckiebot side. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
@@ -155,45 +155,16 @@ The `callback()` function controls the motor based on messages received. And `ro
 $ python motor_control.py
 ```
 
-### Picam Node ROS
-You are also provided with a ROS node for image publishing, forked from https://github.com/UbiquityRobotics/raspicam_node. To get it running, first run 
-```
-$ sudo apt install ros-melodic-raspicam-node
-```
-Then add the following line 
-```
-yaml https://raw.githubusercontent.com/UbiquityRobotics/rosdep/master/raspberry-pi.yaml
-```
-to the file `/etc/ros/rosdep/sources.list.d/30-ubiquity.list`.
-Then run 
-```
-$ rosdep update
-$ cd ~/Duckiebot_Survey/catkin_ws
-$ rosdep install --from-paths src --ignore-src --rosdistro=melodic -y –skip-keys libraspberrypi0
-```
-The rostopic name should be *raspicam_node/image* and the message type is [sensor_msgs/Image.msg](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Image.html). Remember you can always find current topic by 
-```
-$ rostopic list
-```
-### Running ROS
-Once you have all scripts ready, build all of them by 
-```
-$ cd ~/Duckiebot_Survey/catkin_ws
-$ catkin_make
-$ source devel/setup.bash
-```
-For rospy scripts, simply running it in python works with a **roscore** on. For roscpp scripts like Picam node, there’s usually a launch file to bring everything up:
-```
-$ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true
-```
-Note that the command roslaunch will bring up a **roscore**, so you could launch Picam first and then run other rospy scripts. To stop a script, simple press `ctrl+c`.
-### Task
-You are provided with ROS subscriber `motor_control.py` for motor command and ROS publisher for image publishing, they should be running on the duckiebot side. Try to make the duckiebot do lane following in scripts `~/Duckiebot_Survey/catkin_ws/src/lane_following/src/lane_following.py` by filling in the `#TO DO` sections (search `TO DO` by `ctrl+F`). The main part is to complete the publisher for motor command and subsciber for image. Make sure to set **ROS_MASTER_URI** on both duckiebot and computer.
 
-To test the scripts, open up three terminals and two `ssh` into the duckiebot. Go to `~/Duckiebot_Survey/catkin_ws` and run
-```
-$ source devel/setup.bash						#in all terminals
-$ roslaunch raspicam_node camerav2_640x480.launch enable_raw:=true	#on duckiebot
-$ python src/motor_control/src/motor_control.py				#on duckiebot
-$ python src/lane_following/src/lane_following.py			#on computer
+### Task 1: PiCam Streaming
+Given above examples for webcam publisher and subscriber, write another ROS publisher and subscriber for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html. The publisher has to run on the duckiebot side, and the subscriber may be on any device over the network.
 
+### Task 2: Motor Driving
+Inside `~/Duckiebot_Survey_ROS_RR/ROS/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an ROS subscriber. After that, try create an ROS publisher script on your laptop to drive the duckiebot motor remotely.
+
+### Task 3: Joystick Command
+You are provided with a joystick, the goal is to write an ROS publisher that sends the command from joystick to the network. Try to conduct a simple subsciber to check if you can get the command from the publisher, and then combine with the publisher in Task 2 to drive the motor accordingly based on the joystick command.
+
+### Task 4: Emergency "Stop"
+Based on the Picam publisher from Task 1 and script for joystick motor control from Task 3, the goal is to integrate them together with a little image processing. There will be "Stop" sign on the path, so when you are driving the duckiebot and there's a "Stop" sign too close, the duckiebot shall stop immediately. 
+First modify the client from Task 1 to add "Stop" sign detection: taken the fact that the "Stop" sign is almost red, try filter out all red pixels and go through a connected component lableling. Then integrate this with the client from Task 3: if the final number of pixels are larger than a threshold, the duckiebot shall stop. 
