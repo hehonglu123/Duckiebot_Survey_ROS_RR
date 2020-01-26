@@ -141,20 +141,23 @@ python Example_Webcam_Pub.py
 On the other terminal, type in  `rostopic list`, and you should see *image_raw* listed below. Then try `rostopic echo /image_raw`, this will display the message on this topic in the terminal. You can always check what topic is available by this technique. To stop a running ROS script, simply press `ctrl+c`. 
 
 ### ROS Subscriber
-The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `Duckiebot_Survey/catkin_ws/src/motor_control/src/motor_control.py` on the duckiebot side. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
+The ROS subscriber script is called `Example_Webcam_Subscriber.py` inside `Duckiebot_Survey_ROS_RR/ROS`. It's also necessary to import the ROS library and message first:
 ```
-rospy.init_node('motor_control', anonymous=True)
-rospy.Subscriber("motor_command", Twist, callback)
+import rospy
+from sensor_msgs.msg import Image
 ```
-Above lines initialize the ROS node name as *motor_control*, and subscribe to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). And import a ROS message type like Twist by 
+In the `main()` function, similar to the publisher part, it's the same to initialize the ros node first, and then initialize the subscriber:
 ```
-from geometry_msgs.msg import Twist
+rospy.init_node('stream_node', anonymous=True)
+sub = rospy.Subscriber("/image_raw",Image,callback)
 ```
-The `callback()` function controls the motor based on messages received. And `rospy.spin()` makes the subscriber runs indefinitely, applies to everything above it in main function. To run this subscriber, simply type in 
-```
-$ python motor_control.py
-```
+The `callback` is a callback function, defined above as `def callback(data)`. Every time a message is received from the topic *image_raw*,  the callback function is triggered. Inside the callback function, the data is first deserialized by `imgmsg_to_cv2` and then displayed in the window.
 
+At the bottom part, `rospy.spin()` makes the subscriber runs indefinitely, applies to everything above it in main function. To run this subscriber, simply type in 
+```
+$ python Example_Webcam_Subscriber.py
+```
+And it's able to display the webcam image in real time.
 
 ### Task 1: PiCam Streaming
 Given above examples for webcam publisher and subscriber, write another ROS publisher and subscriber for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html. The publisher has to run on the duckiebot side, and the subscriber may be on any device over the network.
