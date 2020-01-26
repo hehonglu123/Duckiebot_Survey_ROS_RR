@@ -102,7 +102,7 @@ You are provided with a joystick, the goal is to write an RR service that sends 
 Based on the Picam client from Task 1 and joystick motor control client from Task 3, the goal is to integrate them together with a little image processing. There will be "Stop" sign on the path, so when you are driving the duckiebot and there's a "Stop" sign too close, the duckiebot shall stop immediately. 
 First modify the client from Task 1 to add "Stop" sign detection: taken the fact that the "Stop" sign is almost red, try filter out all red pixels and go through a connected component lableling. Then integrate this with the client from Task 3: if the final number of pixels are larger than a threshold, the duckiebot shall stop. 
 
-## ROS Tutorial
+## ROS Survey
 The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. In our case the subscriber is on the duckiebot, listening to the speed command messages from remote Ubuntu laptop. And obviously the Ubuntu laptop is the publisher, so that user can publish command toward the duckiebot. Another relationship in ROS is Master-Slave. In order to use ROS in python, it’s necessary to `import rospy` at the start of each script.
 
 ### ROS Master
@@ -111,7 +111,35 @@ To initiate a ROS communication from laptop to the duckiebot, it’s necessary t
 , where the hostname is the laptop’s hostname or IP address. Once this is done, you can look up this value by 
 `$ echo $ROS_MASTER_URI`
 to make sure it’s set. Note you need to do this for every new terminal opened, and you only need one roscore running in one Master-Slave setup, which should be on the laptop side. This only needs to be done if you need ROS communication among different machines.
-So for the keyboard control example, we have communication between duckiebot and laptop. On the laptop side, open up three terminals, with one `ssh` into the duckiebot, and type in above command in all three terminals. Start a **roscore** in one terminal by typing `$ roscore`.
+So for the keyboard control example, we have communication between duckiebot and laptop. On the laptop side, open up four terminals, with one `ssh` into the duckiebot, and type in above command in all four terminals. Start a **roscore** in one terminal (Master side) by typing `$ roscore`.
+
+### ROS Publisher
+The example for ROS is also the Webcam streaming. The file `Example_Webcam_Pub.py` inside `Duckiebot_Survey_ROS_RR/ROS/` is a simple webcam ROS python publisher. First the ROS libraries and messages are imported:
+```
+import rospy
+from cv_bridge import CvBridge, CvBridgeError
+from sensor_msgs.msg import Image
+```
+Then take a look at the `main()` function, the ROS node is initialized:
+```
+rospy.init_node('camera_node',anonymous=False)
+camera_node = CameraNode()
+```
+A `CameraNode()` object is created, and `rospy.spin()` keeps the program running. Now let's dig into the `CameraNode()` object. The camera parameters and publisher are set when constructed.
+```
+self.pub_img= rospy.Publisher("image_raw",Image,queue_size=1)
+```
+This line specifies the **ROS Topic** to be published to is called *image_raw*, and the queue_size is the buffer size for publishing.
+The main part is the function ` def grabAndPublish(self,publisher)`, where the image is captured through `rval,img_data = self.camera.read()`, and then converted from OpenCV image to ROS image type below. Then the data is published from this node by 
+```
+publisher.publish(image_msg)
+```
+Try running this publisher simply by 
+```
+python Example_Webcam_Pub.py
+```
+On the other terminal, type in  `rostopic list`, and you should see *image_raw* listed below. Then try `rostopic echo /image_raw`, this will display the message on this topic in the terminal. You can always check what topic is available by this technique.
+
 ### ROS Subscriber
 The ROS script on the duckiebot contains a subscriber for motor command and a publisher for image acquisition. The motor command subscriber is `Duckiebot_Survey/catkin_ws/src/motor_control/src/motor_control.py` on the duckiebot side. This script is looks very similar to RR Drive Service because most part is the provided python class object. Inside the subscriber, there’s a function `listener()`, and this is the main part for ROS subscriber. 
 ```
@@ -126,34 +154,6 @@ The `callback()` function controls the motor based on messages received. And `ro
 ```
 $ python motor_control.py
 ```
-
-### ROS Publisher
-The example for ROS publisher on laptop side is to send motor command over to the subscriber on the duckiebot side. Inside `Duckiebot_Survey/catkin_ws/src/motor_control/src/keyboard.py` on laptop side, it’s again similar to the RR client. At the bottom part of this script, 
-```
-pub = rospy.Publisher('motor_command', Twist, queue_size=0)
-```
-This line initialize the ROS publisher, publishing to **ROS Topic** *motor_command*, with [geometry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html) type of [ROS message](http://wiki.ros.org/msg). The queue_size is the buffer size for publishing.
-```
-rospy.init_node('motor_command', anonymous=True)
-```
-This line is the same as the one in subscriber, which initialize the ROS node named *motor_command*.
-```
-rate = rospy.Rate(10)
-```
-And here the rate specifies the publishing rate.
-Inside the `loop()` function is where the `Twist()` message is composed. 
-```
-velocity = Twist()
-velocity.linear.x=0
-velocity.linear.y=0
-```
-The `velocity.linear.x` and `velocity.linear.y` corresponds to left and right wheel velocity respectively. And each loop the composed message is published out by 
-```
-pub.publish(velocity)
-```
-To run this publisher, simply type 
-`$ python keyboard.py` 
-in the terminal. Try playing with the keyboard control and see how messages are published and subscribed between laptop and duckiebot.
 
 ### Picam Node ROS
 You are also provided with a ROS node for image publishing, forked from https://github.com/UbiquityRobotics/raspicam_node. To get it running, first run 
