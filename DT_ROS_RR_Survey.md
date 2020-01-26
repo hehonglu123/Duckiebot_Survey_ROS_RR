@@ -88,15 +88,19 @@ Both Webcam service and client are ready to run, simply run it as a python scrip
 python SimpleWebcamService.py 	#on duckiebot
 python SimpleWebcamClient_streaming.py	#on laptop
 ```
-### Task 1
-Given above examples for webcam service and client, write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html.
+### Task 1: PiCam Streaming
+Given above examples for webcam service and client, write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html. The service has to run on the duckiebot side, and the client may be on any device over the network.
 
 
-### Task 2
-Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. After that, try create an RR client script on your laptop to drive the duckiebot remotely.
+### Task 2: Motor Driving
+Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
 
+### Task 3: Joystick Command
+You are provided with a joystick, the goal is to write an RR service that sends the command from joystick to the network. Try to conduct a simple client to check if you can get the value from the service, and then drive the motor accordingly based on the joystick command.
 
-You are provided with `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py`, and the goal is to make the duckiebot do lane following. The usage of `DuckiebotRR-Service-PiCam.py` is similar to the given example `SimpleWebcamService.py`. The task file is called `DuckiebotRR-Client-LaneFollower.py`, and fill in the `#TO DO` sections (search `TO DO` by `ctrl+F`). Both  `DuckiebotRR-Service-Drive.py` and `DuckiebotRR-Service-PiCam.py` should be running on the duckiebot, and `DuckiebotRR-Client-LaneFollower.py` should be running on the computer side. You can either edit the file on duckiebot directly using `nano` or `vim`, or you can modify the file on laptop and use `scp` command to copy the file onto duckiebot.
+### Task 4: Emergency "Stop"
+Based on the Picam client from Task 1 and joystick motor control client from Task 3, the goal is to integrate them together with a little image processing. There will be "Stop" sign on the path, so when you are driving the duckiebot and there's a "Stop" sign too close, the duckiebot shall stop immediately. 
+First modify the client from Task 1 to add "Stop" sign detection: taken the fact that the "Stop" sign is almost red, try filter out all red pixels and go through a connected component lableling. Then integrate this with the client from Task 3: if the final number of pixels are larger than a threshold, the duckiebot shall stop. 
 
 ## ROS Tutorial
 The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. In our case the subscriber is on the duckiebot, listening to the speed command messages from remote Ubuntu laptop. And obviously the Ubuntu laptop is the publisher, so that user can publish command toward the duckiebot. Another relationship in ROS is Master-Slave. In order to use ROS in python, it’s necessary to `import rospy` at the start of each script.
