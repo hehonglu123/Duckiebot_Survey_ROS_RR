@@ -166,7 +166,7 @@ Given above examples for webcam publisher and subscriber, write another ROS publ
 Inside `~/Duckiebot_Survey_ROS_RR/ROS/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an ROS subscriber. After that, try create an ROS publisher script on your laptop to drive the duckiebot motor remotely.
 
 ### Task 3: Joystick Command
-You are provided with a joystick, the goal is to write an ROS publisher that sends the command from joystick to the network. Try to conduct a simple subsciber to check if you can get the command from the publisher, and then combine with the publisher in Task 2 to drive the motor accordingly based on the joystick command.
+You are provided with a joystick, the goal is to write an ROS publisher that sends the command ([sensor_msgs/Joy](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Joy.html)) from joystick to the network. Try to conduct a simple subsciber to check if you can get the command from the publisher, and then combine with the publisher in Task 2 to drive the motor accordingly based on the joystick command.
 
 ### Task 4: Emergency "Stop"
 Based on the Picam publisher from Task 1 and script for joystick motor control from Task 3, the goal is to integrate them together with a little image processing. There will be "Stop" sign on the path, so when you are driving the duckiebot and there's a "Stop" sign too close, the duckiebot shall stop immediately. 
