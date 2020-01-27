@@ -120,7 +120,7 @@ import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 ```
-The (ROS sensor message)[http://wiki.ros.org/sensor_msgs] are a standardized series of messages that used for communication between publisher and subscriber, and here to publish image data, we are using 
+The [ROS sensor message](http://wiki.ros.org/sensor_msgs) are a standardized series of messages that used for communication between publisher and subscriber, and here to publish image data, we are using [sensor_msgs/Image](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Image.html).
 Then take a look at the `main()` function, the ROS node is initialized:
 ```
 rospy.init_node('camera_node',anonymous=False)
