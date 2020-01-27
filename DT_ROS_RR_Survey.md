@@ -1,9 +1,9 @@
 # Duckiebot ROS and RR Survey
 ## Introduction
-In this survey, we want students to learn and compare robotics middleware: widely used [Robot Operating System](http://wiki.ros.org/) (ROS) and [Robot Raconteur](https://www.robotraconteur.com/) (RR) designed by RPI alumni. Given a duckiebot with [Ubuntu Mate (18.04)](https://ubuntu-mate.org/blog/ubuntu-mate-bionic-final-release/) image, the goal is to use ROS and Robot Raconteur to achieve lane following.
+In this survey, we want students to learn and compare robotics middleware: widely used [Robot Operating System](http://wiki.ros.org/) (ROS) and [Robot Raconteur](https://www.robotraconteur.com/) (RR) designed by RPI alumni. Given a duckiebot with [Ubuntu Mate (18.04)](https://ubuntu-mate.org/blog/ubuntu-mate-bionic-final-release/) image, the goal is to use ROS and Robot Raconteur to achieve joystick control with a little image processing.
 On the computer/duckiebot, please follow instructions on [RR website](https://github.com/robotraconteur/robotraconteur/wiki/Download) (Ubuntu Xenial python2 version) and [ROS website](http://wiki.ros.org/melodic/Installation/Ubuntu) (Desktop version) to install both of them.
 ## Duckiebot
-[Duckiebot](https://www.duckietown.org/) is a wheeled robot with 2 motors, one Raspberry Pi, a motor HAT and a Pi Camera. You have the control over 2 motor wheels and read image or video from Pi Cam. Please follow Duckiebot Setup Guide before proceeding. To access the duckiebot, use **ssh** command with given *username*, *password* and *IP address*:
+[Duckiebot](https://www.duckietown.org/) is a wheeled robot with 2 motors, one Raspberry Pi, a motor HAT and a Pi Camera. You have the control over 2 motor wheels and read image or video from Pi Cam. To access the duckiebot, use **ssh** command with given *username*, *password* and *IP address*:
 ```
 ssh <username>@<IP>
 ```
@@ -16,7 +16,7 @@ git clone https://github.com/hehonglu123/Duckiebot_Survey_ROS_RR.git
 ## Robot Raconteur Survey
 Robot Raconteur is an object oriented Service-Client middleware. An RR service generally runs with a sensor/robot to have communication directly with them. An RR client usually can receive sensor messages from service and call object function to command the robot. In this survey, we’ll first demonstrate how RR works with a webcam streaming. 
 ### RR Service:
-Inside `Duckiebot_Survey_ROS_RR/RobotRaconteur`, there is RR robdef called `experimental.createwebcam2.robdef`
+Inside `Duckiebot_Survey_ROS_RR/RobotRaconteur`, there is RR robdef called `experimental.createwebcam2.robdef`.
 `service experimental.createwebcam2` defines the service robdef name, and it'll be refered in RR service script as this file. `stdver 0.9` is current RR version. 
 ```
 struct WebcamImage
@@ -26,7 +26,7 @@ struct WebcamImage
     field uint8[] data
 end
 ```
-This is a sample structure data type in RR, similar to a python object. You can look for other data type in [RR python documentation](https://s3.amazonaws.com/robotraconteurpublicfiles/docs/IntroductionToRobotRaconteur-2019-06-19.pdf).
+This is a sample structure type in RR, similar to a python object. You can look for other data type in [RR python documentation](https://s3.amazonaws.com/robotraconteurpublicfiles/docs/IntroductionToRobotRaconteur-2019-06-19.pdf).
 ```
 object Webcam
     property string Name [readonly]
@@ -49,7 +49,7 @@ object WebcamHost
     objref Webcam{int32} Webcams
 end
 ```
-This object WebcamHost is the object that is actually passed in this example. It includes a list of webcam names and webcam objects, incase when there're multiple webcams connected.
+This object WebcamHost is the object that is actually passed in this webcam example. It includes a list of webcam names and webcam objects, in case when there're multiple webcams connected.
 
 Now take a look at the actual service script `SimpleWebcamService.py `, at the very start, we import RR library:
 ```
@@ -90,7 +90,6 @@ python SimpleWebcamClient_streaming.py	#on laptop
 ```
 ### Task 1: PiCam Streaming
 Given above examples for webcam service and client, write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html. The service has to run on the duckiebot side, and the client may be on any device over the network.
-
 
 ### Task 2: Motor Driving
 Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
@@ -147,7 +146,7 @@ The ROS subscriber script is called `Example_Webcam_Subscriber.py` inside `Ducki
 import rospy
 from sensor_msgs.msg import Image
 ```
-In the `main()` function, similar to the publisher part, it's the same to initialize the ros node first, and then initialize the subscriber:
+In the `main()` function, similar to the publisher part, it's the same to initialize the ROS node first, and then initialize the subscriber:
 ```
 rospy.init_node('stream_node', anonymous=True)
 sub = rospy.Subscriber("/image_raw",Image,callback)
