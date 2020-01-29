@@ -89,7 +89,7 @@ python SimpleWebcamService.py 	#on duckiebot
 python SimpleWebcamClient_streaming.py	#on laptop
 ```
 ### Task 1: PiCam Streaming
-Given above examples for webcam service and client, write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html. The service has to run on the duckiebot side, and the client may be on any device over the network.
+Given above examples for webcam service and client, write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.10/recipes1.html. The service has to run on the duckiebot side, and the client may be on any device over the network.
 
 ### Task 2: Motor Driving
 Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
