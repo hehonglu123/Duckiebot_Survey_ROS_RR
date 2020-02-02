@@ -109,8 +109,32 @@ Open up `move.py` and take a look at how it's done. First the ROS libraries and 
 import rospy
 from geometry_msgs.msg import Twist
 ```
-The [ROS geometry message](http://wiki.ros.org/sensor_msgs) are a standardized series of messages that used for communication between publisher and subscriber, and here to publish image data, we are using [sensor_msgs/Image](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Image.html)
-Inside `move()` function, 
+The [ROS message](http://wiki.ros.org/msg) are a standardized series of messages that used for communication between publisher and subscriber, and here to publish velocity data, we are using [gemoetry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html)
+Inside `move()` function, the ROS node, publisher and message type are initialized:
+```
+rospy.init_node('robot_cleaner', anonymous=True)
+velocity_publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10) #Note the rostopic, message type are specified 
+vel_msg = Twist()
+```
+After the script reads in user input data, the message is formed by setting values of each component (`linear` and `angular`). The program keeps running inside the `while` loop, and at each iteration, the message is published to **rostopic** `/turtle1/cmd_vel` by `velocity_publisher.publish(vel_msg)`. Take a look at `rotate.py`, which commands the turtle to rotate and get a sense how this can be combined to command the turtle to specified location.
+Now in the terminal running `move.py`, terminate it by `ctrl+c` and run `python gotogoal.py`. Specify the location and tolerance and monitor the ros message in the `echo` terminal. 
+Now open the script `gotogoal.py`, similarly, the ros library and messages are imported at the top:
+```
+import rospy
+from geometry_msgs.msg  import Twist
+from turtlesim.msg import Pose
+```
+, and the initialization looks similar except there's a subscriber now:
+```
+self.pose_subscriber = rospy.Subscriber('/turtle1/pose', Pose, self.callback)
+```
+This subscriber subscribes to the **rostopic** `/turtle1/pose` with [`Pose`](https://github.com/ros/ros_tutorials/blob/melodic-devel/turtlesim/msg/Pose.msg) type of message. Everytime a message is subscribed, the `callback()` function will be triggered, so that this script can always get the current location of the turtle to feed into the feedback loop. Depending on current location and desired location specified by the user, the linear and angular velocity is calculated out and published to **rostopic** `/turtle1/cmd_vel` by `self.velocity_publisher.publish(vel_msg)`. `rospy.spin()` keeps this script runs indefinitely until interruption.
+
+### Task 1: Motor Driving
+Inside `~/Duckiebot_Survey_ROS_RR/ROS/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an ROS subscriber. After that, try create an ROS publisher script on your laptop to drive the duckiebot motor remotely.
+
+
+
 
 In our case the subscriber is on the duckiebot, listening to the speed command messages from remote Ubuntu laptop. And obviously the Ubuntu laptop is the publisher, so that user can publish command toward the duckiebot. Another relationship in ROS is Master-Slave. In order to use ROS in python, it’s necessary to `import rospy` at the start of each script.
 
@@ -163,8 +187,6 @@ $ python Example_Webcam_Subscriber.py
 And it's able to display the webcam image in real time.
 
 
-### Task 1: Motor Driving
-Inside `~/Duckiebot_Survey_ROS_RR/ROS/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an ROS subscriber. After that, try create an ROS publisher script on your laptop to drive the duckiebot motor remotely.
 
 ### ROS Master
 To initiate a ROS communication from laptop to the duckiebot, it’s necessary to identify which one is ROS_MASTER. This needs to be done on both side by 
