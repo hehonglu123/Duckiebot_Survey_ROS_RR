@@ -1,22 +1,14 @@
-from RobotRaconteur.Client import *
+from RobotRaconteur.Client import *		#import RR client library
 import time
+import pygame
+import os, sys
+import re
 
 #RRN is imported from RobotRaconteur.Client
 #Connect to the service.
 obj=RRN.ConnectService('rr+tcp://localhost:52222/?service=Create')
 
-# #The "Create" object reference is now available for use
-# #Drive for a bit
-# while True:
-# 	obj.Drive(0.1,0.1)
-# 	time.sleep(0.1)
-
-import pygame
-import os, sys
-import re
-
-
-
+#pygame initialization
 screen_size = 300
 speed_tang = 1.0
 speed_norm = 1.0
@@ -45,22 +37,22 @@ def loop(obj):
 
         # drive left
         if keys[pygame.K_LEFT]:
-            obj.Drive(-0.5,0)
+            obj.Drive(-0.5,0)			####Drive left
             screen.blit(dpad_l, (0,0))
 
         # drive right
         if keys[pygame.K_RIGHT]:
-            obj.Drive(0.5,0)
+            obj.Drive(0.5,0)			####Drive right
             screen.blit(dpad_r, (0,0))
 
         # drive forward
         if keys[pygame.K_UP]:
-            obj.Drive(0,-0.5)
+            obj.Drive(0,-0.5)			####Drive up
             screen.blit(dpad_f, (0,0))
 
         # drive backwards
         if keys[pygame.K_DOWN]:
-            obj.Drive(0,0.5)
+            obj.Drive(0,0.5)			####Drive down
             screen.blit(dpad_b, (0,0))
 
 
@@ -128,8 +120,7 @@ def print_hint():
 
 if __name__ == '__main__':
 
-
-    # prepare pygame
+	# prepare pygame
     pygame.init()
 
     file_dir = os.path.dirname(__file__)
@@ -141,8 +132,8 @@ if __name__ == '__main__':
 
 
     prepare_dpad()
-
-    # print the hint
     print_hint()
+
+    #Connect to RR service
     obj=RRN.ConnectService('rr+tcp://localhost:52222/?service=Create')
     loop(obj)
