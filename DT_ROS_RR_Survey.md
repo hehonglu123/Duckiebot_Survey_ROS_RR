@@ -59,12 +59,12 @@ Most part of this script is pygame interfaces, so the RR client part is inside m
 ```
 obj=RRN.ConnectService('rr+tcp://localhost:52222/?service=Create')
 ```
-The client connects to 'Create' service at localhost port 52222. If the client is on other machine, simply swap localhost with IP address (or hostname) the servie is on.
+The client connects to `Create` service at localhost port 52222. If the client is on another machine, simply swap localhost with IP address (or hostname) the servie is on.
 Then the `obj` object is passed to function `loop()`, which detects the keyboard arrow keys pressed or not. For example, if left arrow key is pressed, then 
 ```
 obj.Drive(-0.5,0)
 ```
-Try running this client on another terminal and play with it. Make sure the service always has to start before the client.
+Try running this client on another terminal and play with it. Keep in mind the service always has to start before the client.
 
 ### Task 1: Motor Driving
 Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
@@ -73,7 +73,7 @@ Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Exa
 You are provided with a joystick and `joystick.py` that reads in joystick command. The goal is to write an RR service that sends the command from joystick to the network. Try to conduct a simple client to check if you can get the value from the service, and then drive the motor accordingly based on the joystick command.
 
 ### Task 3: PiCam Streaming
-Given above examples for webcam service and client, write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.10/recipes1.html. The service has to run on the duckiebot side, and the client may be on any device over the network.
+Given examples for webcam service (`SimpleWebcamService.py`) and client (`SimpleWebcamClient_streaming.py`), write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.10/recipes1.html. The service has to run on the duckiebot side, and the client may be on any device over the network.
 
 ### Task 4: Emergency "Stop"
 Based on the Picam client from Task 1 and joystick motor control client from Task 3, the goal is to integrate them together with a little image processing. There will be "Stop" sign on the path, so when you are driving the duckiebot and there's a "Stop" sign too close, the duckiebot shall stop immediately. 
