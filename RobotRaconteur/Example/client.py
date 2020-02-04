@@ -4,10 +4,6 @@ import pygame
 import os, sys
 import re
 
-#RRN is imported from RobotRaconteur.Client
-#Connect to the service.
-obj=RRN.ConnectService('rr+tcp://localhost:52222/?service=Create')
-
 #pygame initialization
 screen_size = 300
 speed_tang = 1.0
