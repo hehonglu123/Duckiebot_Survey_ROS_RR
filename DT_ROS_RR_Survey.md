@@ -47,11 +47,11 @@ Now we create a python class object `create_inst=create_impl(0,0)`. The major di
 ```
 authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"`
 ```
-Here the username is **cats** and password is **cats111!** after hashed. You can create your own username and password. The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
+Here the username is **cats** and password is **cats111!** after hashed. You can create your own username and password through MD5 hash (e.g. `echo -n cats111! | md5sum`). The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
 ```
 RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst,security)
 ```
-with service name `Create`.
+with service name `Create`. The `security` argument is actually optional. Without that, any client on network can specify the service IP address to connect.
 Even though `create_inst` is the python class object, the object received on client side only has attributes defined in RR object definition earlier.
 
 ### RR Client:
@@ -61,9 +61,12 @@ from RobotRaconteur.Client import *
 ```
 Most part of this script is pygame interfaces, so the RR client part is inside main function,
 ```
-obj=RRN.ConnectService('rr+tcp://localhost:52222/?service=Create')
+url='rr+tcp://localhost:52222/?service=Create'
+username="cats"
+password={"password":RR.RobotRaconteurVarValue("cats111!","string")}
+obj=RRN.ConnectService(url,username,password)
 ```
-The client connects to `Create` service at localhost port 52222. If the client is on another machine, simply swap localhost with IP address (or hostname) the servie is on.
+The client connects to `Create` service at localhost port 52222. If the client is on another machine, simply swap localhost with IP address (or hostname) the servie is on. The username and password have to match with the ones on service side, otherwise you'll get authentification error. Note that username and password are optional, so if the service doesn't have them, just drop those two argument in `ConnectService`.
 Then the `obj` object is passed to function `loop()`, which detects the keyboard arrow keys pressed or not. For example, if left arrow key is pressed, then 
 ```
 obj.Drive(-0.5,0)
