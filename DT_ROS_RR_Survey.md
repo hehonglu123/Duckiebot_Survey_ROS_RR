@@ -14,7 +14,7 @@ git clone https://github.com/hehonglu123/Duckiebot_Survey_ROS_RR.git
 ```
 
 ## Robot Raconteur Survey
-Robot Raconteur is an object oriented Service-Client middleware. An RR service generally runs with a hardware (e.g sensors,actuators) attached to a robot/computer to have direct communication between them. An RR client can receive messages that are sent from services and can call object functions in the service to command the robot. In this survey, we’ll first demonstrate how RR works with virtual duckiebot keyboard control. 
+Robot Raconteur is an object oriented Service-Client middleware. An RR service generally runs with a hardware (e.g. sensors,actuators) attached to a robot/computer to have direct communication between them. An RR client can receive messages that are sent from services and can call object functions in the service to command the robot. In this survey, we’ll first demonstrate how RR works with virtual duckiebot keyboard control. 
 ### RR Service:
 First go to `Duckiebot_Survey_ROS_RR/RobotRaconteur/Example`, there is RR service script `service.py`. Simply run it by `python service.py`, and it will bring up a `pygame` window, with a virtual Duckiebot at upper left corner. Now open `service.py` in an Editor, and see how the RR service actually works. 
 In order to use Robot Raconteur library as RR service, it’s necessary to import RR library at start:
@@ -47,7 +47,7 @@ Now we create a python class object `create_inst=create_impl(0,0)`. The major di
 ```
 authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"`
 ```
-Here the username is **cats** and password is **cats111!** after hashed. You can create your own username and password through MD5 hash (e.g. `echo -n cats111! | md5sum`). The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
+Here the username is **cats** and password is **cats111!** after hashed. You can create your own username and password through MD5 hash (e.g. `$ echo -n cats111! | md5sum`). The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
 ```
 RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst,security)
 ```
