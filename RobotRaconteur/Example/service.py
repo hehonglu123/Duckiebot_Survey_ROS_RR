@@ -54,10 +54,16 @@ if __name__ == '__main__':
         #Register the service type
         RRN.RegisterServiceType(minimal_create_interface)               #register service type
 
-        create_inst=create_impl(0,0)                #create object                      
+        create_inst=create_impl(0,0)                #create object     
+
+        #add authentication for RR connnections
+        authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"
+        p=RR.PasswordFileUserAuthenticator(authdata)
+        policies={"requirevaliduser" : "true"}
+        security=RR.ServiceSecurityPolicy(p,policies)                 
 
         #Register the service with definition and object
-        RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst)
+        RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst,security)
 
         #Wait for program exit to quit
         raw_input("Press enter to quit")
