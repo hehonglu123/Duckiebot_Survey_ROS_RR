@@ -43,11 +43,11 @@ And the service type is registered by
 ```
 RRN.RegisterServiceType(minimal_create_interface)         
 ```
-Now we create a python class object `create_inst=create_impl(0,0)`. The major difference for Robot Raconteur is that it has security over service. The password is hashed and a username is also required to connect to the service. 
+Now we create a python class object `create_inst=create_impl(0,0)`. The major difference for Robot Raconteur is that it has security layer over service. The password is hashed and a username is also required to connect to the service. 
 ```
 authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"`
 ```
-Here the username is **cats** and password is **cats111!** after hashed. You can create your own username and password through MD5 hash (e.g. `$ echo -n cats111! | md5sum`). The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
+Here the username is **cats** and password is **cats111!**. You can create your own username and password through MD5 hash (e.g. `$ echo -n cats111! | md5sum`). The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
 ```
 RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst,security)
 ```
