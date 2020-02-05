@@ -14,10 +14,10 @@ git clone https://github.com/hehonglu123/Duckiebot_Survey_ROS_RR.git
 ```
 
 ## Robot Raconteur Survey
-Robot Raconteur is an object oriented Service-Client middleware. An RR service generally runs with a sensor/robot to have communication directly with them. An RR client usually can receive sensor messages from service and call object function to command the robot. In this survey, we’ll first demonstrate how RR works with virtual duckiebot keyboard control. 
+Robot Raconteur is an object oriented Service-Client middleware. An RR service generally runs with a hardware (e.g sensors,actuators) attached to a robot/computer to have direct communication between them. An RR client can receive messages that are sent from services and can call object functions in the service to command the robot. In this survey, we’ll first demonstrate how RR works with virtual duckiebot keyboard control. 
 ### RR Service:
 First go to `Duckiebot_Survey_ROS_RR/RobotRaconteur/Example`, there is RR service script `service.py`. Simply run it by `python service.py`, and it will bring up a `pygame` window, with a virtual Duckiebot at upper left corner. Now open `service.py` in an Editor, and see how the RR service actually works. 
-At the very top, the RR library is imported:
+In order to use Robot Raconteur library as RR service, it’s necessary to import RR library at start:
 ```
 import RobotRaconteur as RR
 RRN=RR.RobotRaconteurNode.s
@@ -43,9 +43,13 @@ And the service type is registered by
 ```
 RRN.RegisterServiceType(minimal_create_interface)         
 ```
-Now we create a python class object `create_inst=create_impl(0,0)`, and this object is passed from service by  
+Now we create a python class object `create_inst=create_impl(0,0)`. The major difference for Robot Raconteur is that it has security over service. The password is hashed and a username is also required to connect to the service. 
 ```
-RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst)
+authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"`
+```
+Here the username is **cats** and password is **cats111!** after hashed. You can create your own username and password. The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
+```
+RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst,security)
 ```
 with service name `Create`.
 Even though `create_inst` is the python class object, the object received on client side only has attributes defined in RR object definition earlier.
