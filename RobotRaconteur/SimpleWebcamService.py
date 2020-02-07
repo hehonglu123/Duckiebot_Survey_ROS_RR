@@ -16,6 +16,8 @@ import platform
 import sys
 import argparse
 
+#TODO: import picam library
+
 #Class that implements a single webcam
 class Webcam_impl(object):
     #Init the camera being passed the camera number and the camera name
@@ -32,7 +34,7 @@ class Webcam_impl(object):
         self._multidimbuffer=numpy.array([],dtype="u1")
 
         #Initialize the camera
-        with self._lock:
+        with self._lock:            # TODO: modify this part to initialize picam
             if platform.system() == "Windows":
                 self._capture=cv2.VideoCapture(cameraid + cv2.CAP_DSHOW)
             else:
@@ -46,7 +48,7 @@ class Webcam_impl(object):
         return self._cameraname
 
     #Capture a frame and return a WebcamImage structure to the client
-    def CaptureFrame(self):
+    def CaptureFrame(self):     # TODO: modify this part to adapt picam image
         with self._lock:
             image=RRN.NewStructure("experimental.createwebcam2.WebcamImage")
             ret, frame=self._capture.read()
@@ -97,7 +99,6 @@ class Webcam_impl(object):
             try:
                 frame=self.CaptureFrame()
             except:
-                #TODO: notify the client that streaming has failed
                 self._streaming=False
                 return
             #Send the new frame to the broadcaster.  Use AsyncSendPacket
@@ -190,7 +191,7 @@ def main():
     args = parser.parse_args()
 
     #Initialize the webcam host root object
-    camera_names=[(0,"Left"),(1,"Right")]
+    camera_names=[(0,"Left"),(1,"Right")]           # TODO: modify this line to adapt picam
     if args.camera_names is not None:
         camera_names_split=list(filter(None,args.camera_names.split(',')))
         assert(len(camera_names_split) > 0)
