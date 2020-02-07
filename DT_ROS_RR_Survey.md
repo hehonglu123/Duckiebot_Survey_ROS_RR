@@ -80,7 +80,7 @@ Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Exa
 You are provided with a joystick and `joystick.py` that reads in joystick command. The goal is to write an RR client that drives the motor accordingly based on the joystick command.
 
 ### Task 3: PiCam Streaming
-Given examples for webcam service (`SimpleWebcamService.py`) and client (`SimpleWebcamClient_streaming.py`), write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.10/recipes1.html. The service has to run on the duckiebot side, and the client may be on any device over the network.
+Given examples for webcam service (`SimpleWebcamService.py`) and client (`SimpleWebcamClient_streaming.py`), write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.10/recipes1.html. Take a look at how to capture OpenCV object. The service has to run on the duckiebot side, and the client may be on any device over the network.
 
 ### Task 4: Emergency "Stop"
 Based on the Picam client from Task 1 and joystick motor control client from Task 3, the goal is to integrate them together with a little image processing. There will be "Stop" sign on the path, so when you are driving the Duckiebot and there's a "Stop" sign too close, the Duckiebot shall stop immediately. 
