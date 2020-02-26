@@ -22,11 +22,11 @@ import argparse
 class Webcam_impl(object):
     #Init the camera being passed the camera number and the camera name
     def __init__(self,cameraid,cameraname):
-        self._lock=threading.RLock()
+        self._lock=threading.RLock()            #background threading for streaming
         self._framestream=None
         self._framestream_endpoints=dict()
         self._framestream_endpoints_lock=threading.RLock()
-        self._streaming=False
+        self._streaming=False                   #streaming flag
         self._cameraname=cameraname
 
         #Create buffers for memory members
@@ -40,7 +40,7 @@ class Webcam_impl(object):
             else:
                 self._capture=cv2.VideoCapture(cameraid)
             self._capture.set(3,320)
-            self._capture.set(4,240)
+            self._capture.set(4,240)            #set the streaming image size
 
     #Return the camera name
     @property
@@ -50,20 +50,20 @@ class Webcam_impl(object):
     #Capture a frame and return a WebcamImage structure to the client
     def CaptureFrame(self):     # TODO: modify this part to adapt picam image
         with self._lock:
-            image=RRN.NewStructure("experimental.createwebcam2.WebcamImage")
-            ret, frame=self._capture.read()
+            image=RRN.NewStructure("experimental.createwebcam2.WebcamImage")    #create RR image object
+            ret, frame=self._capture.read()                             #get next frame and retval flag
             if not ret:
                 raise Exception("Could not read from webcam")
             image.width=frame.shape[1]
             image.height=frame.shape[0]
-            image.step=frame.shape[1]*3
-            image.data=frame.reshape(frame.size, order='C')
+            image.step=frame.shape[1]*3                                          #set up meta data for image
+            image.data=frame.reshape(frame.size, order='C')                     #flatten the image to 1D array
 
             return image
 
     #Start the thread that captures images and sends them through connected
     #FrameStream pipes
-    def StartStreaming(self):
+    def StartStreaming(self):                                                   #start the background thread for streaming
         if (self._streaming):
             raise Exception("Already streaming")
         self._streaming=True
@@ -198,19 +198,19 @@ def main():
         camera_names = [(i,camera_names_split[i]) for i in range(len(camera_names_split))]
         
         
-    obj=WebcamHost_impl(camera_names)
+    obj=WebcamHost_impl(camera_names)           #create webcam object based on the name
     
-    with RR.ServerNodeSetup(args.nodename,args.tcp_port):
+    with RR.ServerNodeSetup(args.nodename,args.tcp_port):           #start RR service node
 
-        RRN.RegisterServiceTypeFromFile("experimental.createwebcam2")
-        RRN.RegisterService("Webcam","experimental.createwebcam2.WebcamHost",obj)
+        RRN.RegisterServiceTypeFromFile("experimental.createwebcam2")   
+        RRN.RegisterService("Webcam","experimental.createwebcam2.WebcamHost",obj) #Register RR service
     
-        c1=obj.get_Webcams(0)[0]
+        c1=obj.get_Webcams(0)[0]                #get the actual camera object
         c1.CaptureFrameToBuffer()
     
         if args.wait_signal:  
             #Wait for shutdown signal if running in service mode          
-            print("Press Ctrl-C to quit...")
+            print("Press Ctrl-C to quit...")        #keep running until Ctrl-C        
             import signal
             signal.sigwait([signal.SIGTERM,signal.SIGINT])
         else:

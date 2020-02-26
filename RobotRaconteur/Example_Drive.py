@@ -50,13 +50,13 @@ class DaguWheelsDriver:
         self.rightSpeed = 0.0
         self.updatePWM()
 
-    def PWMvalue(self, v, minPWM, maxPWM):
+    def PWMvalue(self, v, minPWM, maxPWM):             #convert velocity to PWM output value
         pwm = 0
         if fabs(v) > self.SPEED_TOLERANCE:
             pwm = int(floor(fabs(v) * (maxPWM - minPWM) + minPWM))
         return min(pwm, maxPWM)
 
-    def updatePWM(self):
+    def updatePWM(self):                                #update PWM output based on given velocity
         vl = self.leftSpeed*self.left_sgn
         vr = self.rightSpeed*self.right_sgn
 
@@ -86,7 +86,7 @@ class DaguWheelsDriver:
         self.rightMotor.setSpeed(pwmr)
         self.rightMotor.run(rightMotorMode)
 
-    def setWheelsSpeed(self, left, right):
+    def setWheelsSpeed(self, left, right):                  #set the speed of each wheel
         with self._lock:
             self.leftSpeed = left
             self.rightSpeed = right

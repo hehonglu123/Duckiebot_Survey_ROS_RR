@@ -11,7 +11,7 @@ def detection(image):				#takes in opencv image type, return [c,r] of centroid o
 	# print(stats)
 	for i in range(len(stats)):
 		if stats[i][4]>image.shape[0]*image.shape[1]/100. and stats[i][4]<image.shape[0]*image.shape[1]/2. :
-			return(centroids[i])	
+			return(centroids[i])				#if the size of the CCC is within threshold
 
 # print(detection(cv2.imread('test.jpg')))	
 

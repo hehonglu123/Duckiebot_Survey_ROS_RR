@@ -30,7 +30,7 @@ while True:
     for i in range(joystick_count):
         joystick = pygame.joystick.Joystick(i)
         joystick.init()
-
+        #print the key pressed
         if (joystick.get_axis(0)<-0.9):
             print('left')
         elif (joystick.get_axis(0)>0.9):

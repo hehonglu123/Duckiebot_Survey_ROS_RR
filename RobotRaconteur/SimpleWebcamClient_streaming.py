@@ -21,7 +21,7 @@ current_frame=None
 
 def main():
 
-    url='rr+tcp://duckiebot03:2355?service=Webcam'
+    url='rr+tcp://duckiebot03:2355?service=Webcam'      #url to connect to RR service, need to modify <hostname> or IP address and port
     if (len(sys.argv)>=2):
         url=sys.argv[1]
 
@@ -35,7 +35,7 @@ def main():
 
     #Set the callback for when a new pipe packet is received to the
     #new_frame function
-    p.PacketReceivedEvent+=new_frame
+    p.PacketReceivedEvent+=new_frame    #the next frame is stored in current_frame through this callback function
     try:
         c.StartStreaming()
     except: pass
