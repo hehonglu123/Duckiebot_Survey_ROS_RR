@@ -88,32 +88,34 @@ Given examples for webcam service (`SimpleWebcamService.py`) and client (`Simple
 Based on the Picam client from Task 3 and motor control client from Task 1, the goal is to integrate them together with a little image processing. You are provided with a skeleton example, and the task is to fill in the `TODO` blocks based on the comments. Make sure the final client is running on the duckiebot to avoid network lagging.
 
 ## ROS Survey
-The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. The example for ROS is turtlesim, a turtle vehicle simulator came with ROS installation. Go to `~/Duckiebot_Survey_ROS_RR/ROS/Example` first, then open up 4 terminals on the computer, with one typed in `$ roscore`, one typed in `$ rosrun turtlesim turtlesim_node`, one typed in `python move.py`, and the last one typed in `$ rostopic echo /turtle1/cmd_vel`. Give command in the terminal running `move.py`, and monitor the message in the `echo` terminal.
-Each ROS communication requires one and only one `roscore` running. The command `rosrun turtlesim turtlesim_node` brings up the turtlesim environment as well as a ROS **subscriber** subscribing **rostopic** `/turtle1/cmd_vel`. The script `move.py` is known as the ROS **publisher** that publish the message to the same **rostopic**. 
-Open up `move.py` and take a look at how it's done. First the ROS libraries and messages are imported:
+The structure of ROS is a little different from Robot Raconteur. First it has the Publisher-Subscriber relationship between different nodes. The example for ROS is turtlesim, a turtle vehicle simulator came with ROS installation. Go to `~/Duckiebot_Survey_ROS_RR/ROS/Example` first, then open up 3 terminals on the computer, with one typed in `$ roscore`, one typed in `$ python subscriber.py`, one typed in `python publisher.py`. 
+Each ROS communication requires one and only one `roscore` running. The subscriber brings up the turtlesim environment as well as a ROS **subscriber** subscribing **rostopic** `motor_command`. The publisher is known as the ROS **publisher** that publish the message to the same **rostopic**. 
+Open up `publisher.py` and take a look at how it's done. First the ROS libraries and messages are imported:
 ```
 import rospy
 from geometry_msgs.msg import Twist
 ```
-The [ROS message](http://wiki.ros.org/msg) are a standardized series of messages that used for communication between publisher and subscriber, and here to publish velocity data, we are using [gemoetry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html). Inside `move()` function, the ROS node, publisher and message type are initialized:
+The [ROS message](http://wiki.ros.org/msg) are a standardized series of messages that used for communication between publisher and subscriber, and here to publish velocity data, we are using [gemoetry_msgs/Twist](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html). Inside `main`, the ROS node, publisher and node are initialized:
 ```
-rospy.init_node('robot_cleaner', anonymous=True)
-velocity_publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10) #Note the rostopic, message type are specified 
-vel_msg = Twist()
+pub = rospy.Publisher('motor_command', Twist, queue_size=0)
+rospy.init_node('motor_command', anonymous=True)
 ```
-After the script reads in user input data, the message is formed by setting values of each component (`linear` and `angular`). The program keeps running inside the `while` loop, and at each iteration, the message is published to **rostopic** `/turtle1/cmd_vel` by `velocity_publisher.publish(vel_msg)`. Take a look at `rotate.py`, which commands the turtle to rotate and get a sense how this can be combined to command the turtle to specified location.
-Now in the terminal running `move.py`, terminate it by `ctrl+c` and run `$ python gotogoal.py`. Specify the location and tolerance and monitor the ros message in the `echo` terminal. 
-Now open the script `gotogoal.py` in editor; similarly, the ROS library and messages are imported at the top:
+The message type is initialized on line 31:
+```
+velocity = Twist()
+```
+After the script reads in user keyboard press, the message is initialized and formed by setting values of each component (`linear` and `angular`). The program keeps running inside the `while` loop, and at each iteration, the message is published to **rostopic** `motor_command` by `pub.publish(velocity)`. 
+Now open the script `subscriber.py` in editor; similarly, the ROS library and messages are imported at the top:
 ```
 import rospy
 from geometry_msgs.msg  import Twist
-from turtlesim.msg import Pose
 ```
 , and the initialization looks similar except there's a subscriber now:
 ```
-self.pose_subscriber = rospy.Subscriber('/turtle1/pose', Pose, self.callback)
+rospy.init_node('motor_control', anonymous=True)    
+rospy.Subscriber("motor_command", Twist, callback, queue_size = 1, buff_size=2**24)
 ```
-This subscriber subscribes to the **rostopic** `/turtle1/pose` with [`Pose`](https://github.com/ros/ros_tutorials/blob/melodic-devel/turtlesim/msg/Pose.msg) type of message. Everytime a message is subscribed, the `callback()` function will be triggered, so that this script can always get the current location of the turtle to feed into the feedback loop. Depending on current location and desired location specified by the user, the linear and angular velocity are calculated out and published to **rostopic** `/turtle1/cmd_vel` by `self.velocity_publisher.publish(vel_msg)`. At last, `rospy.spin()` keeps this script runs indefinitely until interruption.
+This subscriber subscribes to the **rostopic** `motor_command` with `Twist`. Everytime a message is subscribed, the `callback()` function will be triggered, so that the virtual duckiebot will move based on the command. At last, `rospy.spin()` on line 45 keeps this script runs indefinitely until interruption.
 
 ### Task 1: Motor Driving
 The first task will ask you to write a subscriber that subscribes to a **rostopic** with `Twist` type of message and drive the motor accordingly (set linear.x for left motor and linear.y for right motor). First open three terminals `ssh` into the duckiebot, with one terminal running `roscore`. Inside `~/Duckiebot_Survey_ROS_RR/ROS/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this a ROS subscriber. After that, run the script directly, and in the other terminal, run `$ rostopic pub <topic-name> <topic-type> [data...]` (replace `<topic-name>` with your **rostopic** name and keep pressing `TAB`, then modify `linear.x` and `linear.y`). You can always monitor the message by `rostopic echo <topic-name>`.
