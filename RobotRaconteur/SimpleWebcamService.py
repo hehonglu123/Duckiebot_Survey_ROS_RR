@@ -16,17 +16,15 @@ import platform
 import sys
 import argparse
 
-#TODO: import picam library
-
 #Class that implements a single webcam
 class Webcam_impl(object):
     #Init the camera being passed the camera number and the camera name
     def __init__(self,cameraid,cameraname):
-        self._lock=threading.RLock()            #background threading for streaming
+        self._lock=threading.RLock()
         self._framestream=None
         self._framestream_endpoints=dict()
         self._framestream_endpoints_lock=threading.RLock()
-        self._streaming=False                   #streaming flag
+        self._streaming=False
         self._cameraname=cameraname
 
         #Create buffers for memory members
@@ -34,13 +32,13 @@ class Webcam_impl(object):
         self._multidimbuffer=numpy.array([],dtype="u1")
 
         #Initialize the camera
-        with self._lock:            # TODO: modify this part to initialize picam
+        with self._lock:
             if platform.system() == "Windows":
                 self._capture=cv2.VideoCapture(cameraid + cv2.CAP_DSHOW)
             else:
                 self._capture=cv2.VideoCapture(cameraid)
             self._capture.set(3,320)
-            self._capture.set(4,240)            #set the streaming image size
+            self._capture.set(4,240)
 
     #Return the camera name
     @property
@@ -48,93 +46,18 @@ class Webcam_impl(object):
         return self._cameraname
 
     #Capture a frame and return a WebcamImage structure to the client
-    def CaptureFrame(self):     # TODO: modify this part to adapt picam image
+    def CaptureFrame(self):
         with self._lock:
-            image=RRN.NewStructure("experimental.createwebcam2.WebcamImage")    #create RR image object
-            ret, frame=self._capture.read()                             #get next frame and retval flag
+            image=RRN.NewStructure("experimental.createwebcam2.WebcamImage")
+            ret, frame=self._capture.read()
             if not ret:
                 raise Exception("Could not read from webcam")
             image.width=frame.shape[1]
             image.height=frame.shape[0]
-            image.step=frame.shape[1]*3                                          #set up meta data for image
-            image.data=frame.reshape(frame.size, order='C')                     #flatten the image to 1D array
+            image.step=frame.shape[1]*3
+            image.data=frame.reshape(frame.size, order='C')
 
             return image
-
-    #Start the thread that captures images and sends them through connected
-    #FrameStream pipes
-    def StartStreaming(self):                                                   #start the background thread for streaming
-        if (self._streaming):
-            raise Exception("Already streaming")
-        self._streaming=True
-        t=threading.Thread(target=self.frame_threadfunc)
-        t.start()
-
-    #Stop the streaming thread
-    def StopStreaming(self):
-        if (not self._streaming):
-            raise Exception("Not streaming")
-        self._streaming=False
-
-    #FrameStream pipe member property getter and setter
-    @property
-    def FrameStream(self):
-        return self._framestream
-    @FrameStream.setter
-    def FrameStream(self,value):
-        self._framestream=value
-        #Create the PipeBroadcaster and set backlog to 3 so packets
-        #will be dropped if the transport is overloaded
-        self._framestream_broadcaster=RR.PipeBroadcaster(value,3)
-
-
-
-    #Function that will send a frame at ideally 4 fps, although in reality it
-    #will be lower because Python is quite slow.  This is for
-    #demonstration only...
-    def frame_threadfunc(self):
-        #Loop as long as we are streaming
-        while(self._streaming):
-            #Capture a frame
-            try:
-                frame=self.CaptureFrame()
-            except:
-                self._streaming=False
-                return
-            #Send the new frame to the broadcaster.  Use AsyncSendPacket
-            #and a blank handler.  We really don't care when the send finishes
-            #since we are using the "backlog" flow control in the broadcaster.
-            self._framestream_broadcaster.AsyncSendPacket(frame,lambda: None)
-
-            #Put in a 100 ms delay
-            time.sleep(.1)
-
-    #Captures a frame and places the data in the memory buffers
-    def CaptureFrameToBuffer(self):
-        with self._lock:
-            #Capture and image and place it into the buffer
-            image=self.CaptureFrame()
-    
-            self._buffer=image.data
-            self._multidimbuffer=numpy.concatenate((image.data[2::3].reshape((image.height,image.width,1)),image.data[1::3].reshape((image.height,image.width,1)),image.data[0::3].reshape((image.height,image.width,1))),axis=2)
-    
-            #Create and populate the size structure and return it
-            size=RRN.NewStructure("experimental.createwebcam2.WebcamImage_size")
-            size.height=image.height
-            size.width=image.width
-            size.step=image.step
-            return size
-
-    #Return the memories.  It would be better to reuse the memory objects,
-    #but for simplicity return new instances when called
-    @property
-    def buffer(self):
-        return RR.ArrayMemory(self._buffer)
-
-    @property
-    def multidimbuffer(self):
-        return RR.MultiDimArrayMemory(self._multidimbuffer)
-
 
     #Shutdown the Webcam
     def Shutdown(self):
@@ -181,45 +104,23 @@ class WebcamHost_impl(object):
 
 def main():
 
-    #Accept the names of the webcams and the nodename from command line
-            
-    parser = argparse.ArgumentParser(description="Example Robot Raconteur webcam service")
-    parser.add_argument("--camera-names",type=str,help="List of camera names separated with commas")
-    parser.add_argument("--nodename",type=str,default="experimental.createwebcam2.WebcamHost",help="The NodeName to use")
-    parser.add_argument("--tcp-port",type=int,default=2355,help="The listen TCP port")
-    parser.add_argument("--wait-signal",action='store_const',const=True,default=False)
-    args = parser.parse_args()
+    with RR.ServerNodeSetup("Webcam_Service",2355) as node_setup:
 
-    #Initialize the webcam host root object
-    camera_names=[(0,"Left"),(1,"Right")]           # TODO: modify this line to adapt picam
-    if args.camera_names is not None:
-        camera_names_split=list(filter(None,args.camera_names.split(',')))
-        assert(len(camera_names_split) > 0)
-        camera_names = [(i,camera_names_split[i]) for i in range(len(camera_names_split))]
+        #Initialize the webcam host root object
+        camera_names=[(0,"Cam1")]
+        obj=WebcamHost_impl(camera_names)
         
-        
-    obj=WebcamHost_impl(camera_names)           #create webcam object based on the name
+        RRN.RegisterServiceTypeFromFile("experimental.createwebcam2")
+        RRN.RegisterService("Webcam","experimental.createwebcam2.WebcamHost",obj)
     
-    with RR.ServerNodeSetup(args.nodename,args.tcp_port):           #start RR service node
+        c1=obj.get_Webcams(0)[0]
 
-        RRN.RegisterServiceTypeFromFile("experimental.createwebcam2")   
-        RRN.RegisterService("Webcam","experimental.createwebcam2.WebcamHost",obj) #Register RR service
-    
-        c1=obj.get_Webcams(0)[0]                #get the actual camera object
-        c1.CaptureFrameToBuffer()
-    
-        if args.wait_signal:  
-            #Wait for shutdown signal if running in service mode          
-            print("Press Ctrl-C to quit...")        #keep running until Ctrl-C        
-            import signal
-            signal.sigwait([signal.SIGTERM,signal.SIGINT])
+        #Wait for the user to shutdown the service
+        if (sys.version_info > (3, 0)):
+            input("Server started, press enter to quit...")
         else:
-            #Wait for the user to shutdown the service
-            if (sys.version_info > (3, 0)):
-                input("Server started, press enter to quit...")
-            else:
-                raw_input("Server started, press enter to quit...")
-    
+            raw_input("Server started, press enter to quit...")
+
         #Shutdown
         obj.Shutdown()    
 

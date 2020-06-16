@@ -11,10 +11,9 @@ from math import floor, atan2, pi, cos, sin, sqrt
 from cv_bridge import CvBridge, CvBridgeError
 
 def callback(data):
-
 	bridge=CvBridge()
 	try:
-		cv_image=bridge.imgmsg_to_cv2(data, "8UC3")
+		cv_image=bridge.imgmsg_to_cv2(data, "bgr8")
 		cv2.namedWindow("Image")
 		if (not cv_image is None):
 			cv2.imshow("Image",cv_image)
@@ -26,6 +25,6 @@ def callback(data):
 
 if __name__ == '__main__': 
 	rospy.init_node('stream_node', anonymous=True)
-	sub = rospy.Subscriber("/image_raw",Image,callback)
+	sub = rospy.Subscriber("webcam",Image,callback)
 	rospy.spin()
 		
