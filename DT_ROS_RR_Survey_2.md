@@ -79,7 +79,7 @@ Try running this client on another terminal and play with it. Keep in mind the s
 Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. Take a look at the pygame example to get a sense how to start. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
 
 ### Task 2: Keyboard Control
-This task is an extension on the pygame extension on duckiebot. With the motor control service you have from task 1, combine the client and the pygame keyboard control example to make the client can use keyboard to teleop the duckiebot. The places to be modified are marked as `TODO` as well.
+This task is an extension on the pygame extension on duckiebot. With the motor control service you have from task 1, combine the client and the pygame keyboard control example to make the client can use keyboard to teleop the duckiebot. You can copy the client in previous example and start from there.
 
 ### Task 3: PiCam Streaming
 Given examples for webcam service (`SimpleWebcamService.py`) and client (`SimpleWebcamClient_streaming.py`), try runnning them to get a sense. Then write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.10/recipes1.html. Take a look at how to capture OpenCV object. The service has to run on the duckiebot side, and the client may be on any device over the network.
@@ -136,7 +136,7 @@ Note you need to do this for every terminal opened, and you only need one roscor
 So for teleop, we have communication between Duckiebot and computer. On the computer side, make sure all terminals are set with **ROS_MASTER_URI** and **ROS_IP**, and with one running `roscore`. Then run your subscriber on duckiebot side, and try the `$ rostopic pub` command on the computer side, and check if the duckiebot receives the messages or not. 
 
 ### Task 2: Keyboard Control
-This task is an extension of the turtlesim keyboard control on duckiebot. With the motor subscriber you have from task 1, combine it with the keyboard control example to make the user can use keyboard to teleop the duckiebot. The places to be modified are marked as `TODO` as well. Make sure to set the **ROS_MASTER_URI** and **ROS_IP** on all terminals on both sides.
+This task is an extension of the turtlesim keyboard control on duckiebot. With the motor subscriber you have from task 1, combine it with the keyboard control example to make the user can use keyboard to teleop the duckiebot. You can copy the publisher in previous example and start from there. Make sure to set the **ROS_MASTER_URI** and **ROS_IP** on all terminals on both sides.
 
 ### Task 3: PiCam Streaming
 Given examples for webcam publisher and subscriber (`Example_Webcam_Pub.py` and `Example_Webcam_Subscriber.py`), write another ROS publisher and subscriber for the Picam on Duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.13/api_streams.html. The publisher has to run on the duckiebot side, and the subscriber may be on any device over the network.
