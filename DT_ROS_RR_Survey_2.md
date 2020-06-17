@@ -64,16 +64,11 @@ And the service type is registered by
 ```
 RRN.RegisterServiceType(minimal_create_interface)         
 ```
-Now we create a python class object `create_inst=create_impl(0,0)`. The major difference for Robot Raconteur is that it has security layer over service. The password is hashed and a username is also required to connect to the service. 
+Now we create a python class object `create_inst=create_impl(0.,0.)`, and register the service:
 ```
-authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"`
+RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst)
 ```
-Here the username is **cats** and password is **cats111!**. You can create your own username and password through MD5 hash (e.g. `$ echo -n cats111! | md5sum`). The final security policy is stored in `security=RR.ServiceSecurityPolicy(p,policies)`, and passed to service registration together with the object, 
-```
-RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst,security)
-```
-with service name `Create`. The `security` argument is actually optional. Without that, any client on network can specify the service IP address to connect.
-Even though `create_inst` is the python class object, the object received on client side only has attributes defined in RR object definition earlier.
+with service name `Create`. Even though `create_inst` is the python class object, the object received on client side only has attributes defined in RR object definition earlier.
 
 ### RR Client:
 As for the RR client `client.py`, the first step is also to import RR client library:
@@ -83,9 +78,7 @@ from RobotRaconteur.Client import *
 Most part of this script is pygame interfaces, so the RR client part is inside main function,
 ```
 url='rr+tcp://localhost:52222/?service=Create'
-username="cats"
-password={"password":RR.RobotRaconteurVarValue("cats111!","string")}
-obj=RRN.ConnectService(url,username,password)
+obj=RRN.ConnectService(url)
 ```
 The client connects to `Create` service at localhost port 52222. If the client is on another machine, simply swap localhost with IP address (or hostname) the servie is on. The username and password have to match with the ones on service side, otherwise you'll get authentification error. Note that username and password are optional, so if the service doesn't have them, just drop those two argument in `ConnectService`.
 Then the `obj` object is passed to function `loop()`, which detects the keyboard arrow keys pressed or not. For example, if left arrow key is pressed, then 
@@ -95,7 +88,7 @@ obj.Drive(-0.5,0)
 Try running this client on another terminal and play with it. Keep in mind the service always has to start before the client.
 
 ### Task 1: Motor Driving
-On duckiebot, inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a script called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. Take a look at the pygame example to get a sense how to start. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
+On duckiebot, inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a script called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. Take a look at the pygame example to get a sense how to start. Start with a service definition, and continue to the service. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
 
 ### Task 2: Keyboard Control
 This task is an extension on the pygame extension on duckiebot. With the motor control service you have from task 1, combine the client and the pygame keyboard control example to make the client can use keyboard to teleop the duckiebot. On your computer, copy the file `client.py` inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/Example` to `~/Duckiebot_Survey_ROS_RR/RobotRaconteur`, and start modify it to connect to the service from Task 1.
