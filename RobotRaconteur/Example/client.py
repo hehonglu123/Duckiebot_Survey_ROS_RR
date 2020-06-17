@@ -132,7 +132,5 @@ if __name__ == '__main__':
 
     #Connect to RR service
     url='rr+tcp://localhost:52222/?service=Create'
-    username="cats"
-    password={"password":RR.RobotRaconteurVarValue("cats111!","string")}
-    obj=RRN.ConnectService(url,username,password)
+    obj=RRN.ConnectService(url)
     loop(obj)

@@ -1,7 +1,7 @@
 import os
 import pygame
-from pygame.math import Vector2
 import time
+import numpy as np
 
 #import RR library
 import RobotRaconteur as RR
@@ -22,7 +22,7 @@ end object
 #Actual class object
 class create_impl:
     def __init__(self, x, y):               #initialization upon creation, mostly pygame setup
-        self.position = Vector2(x, y)
+        self.position = np.array([x, y])
         pygame.init()
         pygame.display.set_caption("Car tutorial")
         width = 1280
@@ -35,16 +35,18 @@ class create_impl:
         self.car_image = pygame.image.load(image_path)
         self.screen.fill((0, 0, 0))
         self.rect = self.car_image.get_rect()
-        self.screen.blit(self.car_image, self.position * 32 - (self.rect.width / 2, self.rect.height / 2))
+        self.screen.blit(self.car_image, self.position * 32. - np.array([self.rect.width / 2., self.rect.height / 2.]))
         pygame.display.flip()
 
     def Drive(self,x_vel,y_vel):            #Drive function, update new position, this is the one referred in definition
-        velocity=Vector2(x_vel,y_vel)
+        velocity=np.array([x_vel, y_vel])
 
-        self.position += velocity
+        self.position[0] += x_vel
+        self.position[1] += y_vel
         self.screen.fill((0, 0, 0))
         self.rect = self.car_image.get_rect()
-        self.screen.blit(self.car_image, self.position * 32 - (self.rect.width / 2, self.rect.height / 2))
+
+        self.screen.blit(self.car_image, self.position * 32. - np.array([self.rect.width / 2., self.rect.height / 2.]))
         pygame.display.flip()
 
 
@@ -54,16 +56,10 @@ if __name__ == '__main__':
         #Register the service type
         RRN.RegisterServiceType(minimal_create_interface)               #register service type
 
-        create_inst=create_impl(0,0)                #create object     
-
-        #add authentication for RR connnections
-        authdata="cats be7af03a538bf30343a501cb1c8237a0 objectlock"
-        p=RR.PasswordFileUserAuthenticator(authdata)
-        policies={"requirevaliduser" : "true"}
-        security=RR.ServiceSecurityPolicy(p,policies)                 
+        create_inst=create_impl(0.,0.)                #create object              
 
         #Register the service with definition and object
-        RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst,security)
+        RRN.RegisterService("Create","experimental.minimal_create.create_obj",create_inst)
 
         #Wait for program exit to quit
         raw_input("Press enter to quit")
