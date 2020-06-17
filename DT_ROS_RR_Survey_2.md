@@ -4,6 +4,12 @@ In this survey, we want students to learn and compare robotics middleware: widel
 On the computer/duckiebot, please follow instructions on [RR website](https://github.com/robotraconteur/robotraconteur/wiki/Download) (Ubuntu Xenial python2 version) and [ROS website](http://wiki.ros.org/melodic/Installation/Ubuntu) (Desktop version) to install both of them.
 In order to edit files on duckiebot, you can either use `vim`/`nano` on terminal, or `scp` command to copy the script to duckiebot. Example:
 `scp <files on laptop> <duckiebot username>@<duckiebot IP>:<location on duckiebot>`
+## Prerequisites
+Ubuntu18.04 
+Python2
+pygame
+
+
 ## Duckiebot
 [Duckiebot](https://www.duckietown.org/) is a wheeled robot with 2 motors, one Raspberry Pi, a motor HAT and a Pi Camera. You have the control over 2 motor wheels and read image or video from Pi Cam. To access the duckiebot, use **ssh** command with given *username*, *password* and *IP address*:
 ```
