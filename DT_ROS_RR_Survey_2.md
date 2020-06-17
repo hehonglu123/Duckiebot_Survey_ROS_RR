@@ -85,7 +85,7 @@ obj.Drive(-0.5,0)
 Try running this client on another terminal and play with it. Keep in mind the service always has to start before the client.
 
 ### Task 1: Motor Driving
-Inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. Take a look at the pygame example to get a sense how to start. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
+On duckiebot, inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. Take a look at the pygame example to get a sense how to start. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
 
 ### Task 2: Keyboard Control
 This task is an extension on the pygame extension on duckiebot. With the motor control service you have from task 1, combine the client and the pygame keyboard control example to make the client can use keyboard to teleop the duckiebot. You can copy the client in previous example and start from there.
