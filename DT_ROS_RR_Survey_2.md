@@ -5,9 +5,12 @@ On the computer/duckiebot, please follow instructions on [RR website](https://gi
 In order to edit files on duckiebot, you can either use `vim`/`nano` on terminal, or `scp` command to copy the script to duckiebot. Example:
 `scp <files on laptop> <duckiebot username>@<duckiebot IP>:<location on duckiebot>`
 ## Prerequisites
-Ubuntu18.04 
+Ubuntu 18.04 
+
 Python2
+
 pygame
+`pip install pygame`
 
 
 ## Duckiebot
