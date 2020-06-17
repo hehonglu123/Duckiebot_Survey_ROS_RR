@@ -12,6 +12,16 @@ Python2
 pygame
 `pip install pygame`
 
+### SSH Mounting
+```
+sudo apt-get install sshfs
+cd ~
+mkdir duckie
+sshfs duckiebot@10.42.0.50:/home/duckiebot duckie
+```
+
+
+
 
 ## Duckiebot
 [Duckiebot](https://www.duckietown.org/) is a wheeled robot with 2 motors, one Raspberry Pi, a motor HAT and a Pi Camera. You have the control over 2 motor wheels and read image or video from Pi Cam. To access the duckiebot, use **ssh** command with given *username*, *password* and *IP address*:
@@ -85,10 +95,10 @@ obj.Drive(-0.5,0)
 Try running this client on another terminal and play with it. Keep in mind the service always has to start before the client.
 
 ### Task 1: Motor Driving
-On duckiebot, inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a scirpt called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. Take a look at the pygame example to get a sense how to start. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
+On duckiebot, inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/`, there's a script called `Example_Drive.py`. This script can run directly, and makes the motor drive straight for 5 seconds. The motor drivers are located in the same directory, and the task is to fill in `#TODO` section to make this an RR motor drive service. Take a look at the pygame example to get a sense how to start. After that, try create an RR client script on your laptop to drive the duckiebot motor remotely.
 
 ### Task 2: Keyboard Control
-This task is an extension on the pygame extension on duckiebot. With the motor control service you have from task 1, combine the client and the pygame keyboard control example to make the client can use keyboard to teleop the duckiebot. You can copy the client in previous example and start from there.
+This task is an extension on the pygame extension on duckiebot. With the motor control service you have from task 1, combine the client and the pygame keyboard control example to make the client can use keyboard to teleop the duckiebot. Copy the file `client.py` inside `~/Duckiebot_Survey_ROS_RR/RobotRaconteur/Example` to `~/Duckiebot_Survey_ROS_RR/RobotRaconteur`, and start modify it to connect to the service from Task 1.
 
 ### Task 3: PiCam Streaming
 Given examples for webcam service (`SimpleWebcamService.py`) and client (`SimpleWebcamClient_streaming.py`), try runnning them to get a sense. Then write RR service and client for the Picam on duckiebot, so that on the computer side you can get video streaming from the Picam. Picam python package is already installed, and their API is listed here: https://picamera.readthedocs.io/en/release-1.10/recipes1.html. Take a look at how to capture OpenCV object. The service has to run on the duckiebot side, and the client may be on any device over the network.
