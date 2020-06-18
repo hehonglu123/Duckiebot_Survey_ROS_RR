@@ -35,7 +35,7 @@ def main():
             cv2.imshow(c1.Name,frame1)
 
         #CV wait for key press on the image window and then destroy
-        if cv2.waitKey(50)==-1:
+        if cv2.waitKey(50)!=-1:             #if not working, try chaning to ==
             break
         
     cv2.destroyAllWindows()
