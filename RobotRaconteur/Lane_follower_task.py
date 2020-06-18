@@ -22,14 +22,6 @@ from math import floor, atan2, pi, cos, sin, sqrt
 def WebcamImageToMat(image):
     #TO DO: Deserialize image
 
-#This function is called when a new pipe packet arrives
-current_frame=None
-def new_frame(pipe_ep):
-	# This function connects to camera, starts streaming and updates the current frame in current_frame
-    #TO DO: update current frame, refer to SimpleWebcamClient_streaming.py
-
-
-
 
 #########################################################################
 # FUNCTIONS FOR LINE DETECTION: BEGIN
@@ -489,7 +481,7 @@ def main():
             #This is not ideal but good enough for demonstration. 
 
             #TO DO: 
-            #set current_frame to deserialized image from picam service         
+            #capture frame        
 
             if not current_frame is None: 
                 # print(current_frame)         
