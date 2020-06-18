@@ -1,7 +1,7 @@
 import os
 import pygame
-from pygame.math import Vector2
 import time
+import numpy as np
 
 #import ROS library
 import rospy
@@ -9,7 +9,7 @@ from geometry_msgs.msg import Twist
 #Actual class object
 class create_impl:
     def __init__(self, x, y):               #initialization upon creation, mostly pygame setup
-        self.position = Vector2(x, y)
+        self.position = np.array([x, y])
         pygame.init()
         pygame.display.set_caption("Car tutorial")
         width = 1280
@@ -26,15 +26,15 @@ class create_impl:
         pygame.display.flip()
 
     def Drive(self,x_vel,y_vel):            #Drive function, update new position, this is the one referred in definition
-        velocity=Vector2(x_vel,y_vel)
+        velocity=np.array([x_vel, y_vel])
 
         self.position += velocity
         self.screen.fill((0, 0, 0))
         self.rect = self.car_image.get_rect()
-        self.screen.blit(self.car_image, self.position * 32 - (self.rect.width / 2, self.rect.height / 2))
+        self.screen.blit(self.car_image, self.position * 32. - np.array([self.rect.width / 2., self.rect.height / 2.]))
         pygame.display.flip()
 
-obj= create_impl(0,0)
+obj= create_impl(0.,0.)
 def callback(data):
     rospy.loginfo(data)
     obj.Drive(data.linear.x,data.linear.y)
