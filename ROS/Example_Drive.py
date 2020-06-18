@@ -1,4 +1,4 @@
-#Duckibot Driver Robot Raconteur service in Python
+#Duckibot Driver ROS subscriber in Python
 
 import time
 import threading
