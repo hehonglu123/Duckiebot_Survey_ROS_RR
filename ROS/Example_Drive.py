@@ -113,6 +113,7 @@ class DaguWheelsDriver:
 
 
 #####################Example:
+#Comment out after starting writing subscriber
 obj=DaguWheelsDriver()				#Create a DaguWheelsDriver object 
 obj.setWheelsSpeed(0.5,0.5)			#Drive duckiebot straight
 time.sleep(5)						#for 5 seconds
