@@ -22,11 +22,12 @@ class Webcam_impl():
 if __name__ == '__main__': 
     picam=Webcam_impl() 
     pub = rospy.Publisher('webcam', Image, queue_size=0) 
-    rospy.init_node('picam', anonymous=True) 
+    rospy.init_node('picam', anonymous=False) 
     bridge=CvBridge() 
     img=Image() 
     img.width=320
     img.height=240
+    print("running")
     while not rospy.is_shutdown(): 
         frame=picam.CaptureFrame() 
         pub.publish(bridge.cv2_to_imgmsg(frame,"bgr8")) 

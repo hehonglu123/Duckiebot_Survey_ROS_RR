@@ -17,14 +17,14 @@ def callback(data):
 		cv2.namedWindow("Image")
 		if (not cv_image is None):
 			cv2.imshow("Image",cv_image)
-		if cv2.waitKey(50)==-1:
+		if cv2.waitKey(50)!=-1:			#if not working, try chaning to ==
 			cv2.destroyAllWindows()
 
 	except CvBridgeError as e:
 		print(e)
 
 if __name__ == '__main__': 
-	rospy.init_node('stream_node', anonymous=True)
+	rospy.init_node('stream_node', anonymous=False)
 	sub = rospy.Subscriber("webcam",Image,callback)
 	rospy.spin()
 		

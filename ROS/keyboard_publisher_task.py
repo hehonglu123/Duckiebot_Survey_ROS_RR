@@ -123,7 +123,7 @@ def print_hint():
 if __name__ == '__main__':
     #TODO: change the topic name to your subscriber topic's name
     pub = rospy.Publisher('motor_command', Twist, queue_size=0)
-    rospy.init_node('motor_command', anonymous=True)
+    rospy.init_node('motor_command', anonymous=False)
     rate = rospy.Rate(10)
 
     # obtain vehicle name
@@ -145,3 +145,4 @@ if __name__ == '__main__':
     # print the hint
     print_hint()
     loop(pub,rate)
+    

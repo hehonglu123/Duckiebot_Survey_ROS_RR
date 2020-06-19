@@ -40,7 +40,7 @@ def callback(data):
     obj.Drive(data.linear.x,data.linear.y)
 def listener():
     
-    rospy.init_node('motor_control', anonymous=True)    
+    rospy.init_node('motor_command_pub', anonymous=False)    
     rospy.Subscriber("motor_command", Twist, callback, queue_size = 1, buff_size=2**24)
     rospy.spin()
 

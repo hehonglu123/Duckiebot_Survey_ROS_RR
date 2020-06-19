@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#TO DO: import proper ros library and message
+#TODO: import proper ros library and message
 import time
 import numpy as np
 import cv2
@@ -449,7 +449,7 @@ def inverse_kinematics(v,omega):
 # FUNCTIONS FOR INVERSE KINEMATICS: END
 ########################################################################
 def callback(data):
-	##TO DO: Given callback data (image), process the image for line detection and publish motor message
+	##TODO: Given callback data (image), process the image for line detection and publish motor message
 	#This function runs whenever receive a message as subscriber
 	# frame = **** #Deserialize data to cv2 image first 
 
@@ -466,7 +466,7 @@ def callback(data):
     
     # If there is no line detected, stop the car.
     if not len(lns_white)>0 and not len(lns_yellow)>0:
-    	#TO DO: stop the vehicle
+    	#TODO: stop the vehicle
         prev_time = time.time()
         return
     # Convert image points to Ground Frame Coordinate points (+x:ahead, +y:left)
@@ -479,7 +479,7 @@ def callback(data):
 
     # If d or phi could not be find, stop the car.
     if d is None or phi is None or in_lane is None:
-        #TO DO: stop the vehicle
+        #TODO: stop the vehicle
         prev_time = time.time()
 
         return
@@ -496,7 +496,7 @@ def callback(data):
     print("vel_left: " + str(vel_left) + ", vel_right: " + str(vel_right))
     
     # Drive the car
-    # TO DO: publish message to drive motor
+    # TODO: publish message to drive motor
 
     
     # Calculate passed time rate
@@ -510,7 +510,7 @@ def callback(data):
 
 
 def main():
-	##TO DO: Initialize ROS node, ROS publisher and subscriber, and make it run indefinetly
+	##TODO: Initialize ROS node, ROS publisher and subscriber, and make it run indefinetly
 
 
 if __name__ == '__main__':

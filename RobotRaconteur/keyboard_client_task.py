@@ -30,7 +30,7 @@ def loop(obj):
         keys = pygame.key.get_pressed()
 
         ### checking keys and executing actions ###
-
+        #TODO: change the motor command based on keyboard press
         # drive left
         if keys[pygame.K_LEFT]:
             obj.Drive(-0.5,0)			####Drive left

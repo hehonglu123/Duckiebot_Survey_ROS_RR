@@ -4,7 +4,7 @@ Created on Wed May  8 17:32:18 2019
 
 @author: BurakAksoy
 """
-#TO DO: import proper Robot Raconteur library
+#TODO: import proper Robot Raconteur library
 
 import time
 import thread
@@ -20,7 +20,7 @@ from math import floor, atan2, pi, cos, sin, sqrt
 #Function to take the data structure returned from the Webcam service
 #and convert it to an OpenCV array
 def WebcamImageToMat(image):
-    #TO DO: Deserialize image
+    #TODO: Deserialize image
 
 
 #########################################################################
@@ -464,7 +464,7 @@ def inverse_kinematics(v,omega):
 ########################################################################
 
 def main():
-    #TO DO: connect to RR services (drive and picam)
+    #TODO: connect to RR services (drive and picam)
     
     is_view = False
     start=time.time()
@@ -480,7 +480,7 @@ def main():
             #Just loop resetting the frame
             #This is not ideal but good enough for demonstration. 
 
-            #TO DO: 
+            #TODO: 
             #capture frame        
 
             if not current_frame is None: 
@@ -496,7 +496,7 @@ def main():
                 
                 # If there is no line detected, stop the car.
                 if not len(lns_white)>0 and not len(lns_yellow)>0:
-                    #TO DO: stop the vehicle
+                    #TODO: stop the vehicle
                     prev_time = time.time()
                     continue
                 # Convert image points to Ground Frame Coordinate points (+x:ahead, +y:left)
@@ -509,7 +509,7 @@ def main():
 
                 # If d or phi could not be find, stop the car.
                 if d is None or phi is None or in_lane is None:
-                    #TO DO: stop the vehicle
+                    #TODO: stop the vehicle
                     prev_time = time.time()
                     continue
                 
@@ -524,7 +524,7 @@ def main():
                 vel_right,vel_left = inverse_kinematics(v,w)
                 print("vel_left: " + str(vel_left) + ", vel_right: " + str(vel_right))
                 
-                # TO DO: Drive the car
+                # TODO: Drive the car
                 
                 
                 
@@ -558,7 +558,7 @@ def main():
     print("Avr. predict: " + str(avr_predict_times))
 
     print('Shutting Down..')
-    #TO DO: stop the vehicle
+    #TODO: stop the vehicle
 
 
 if __name__ == '__main__':

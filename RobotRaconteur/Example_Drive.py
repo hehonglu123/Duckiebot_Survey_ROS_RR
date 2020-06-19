@@ -122,6 +122,10 @@ class DaguWheelsDriver:
 # Comment out after starting writing service
 obj=DaguWheelsDriver()				#Create a DaguWheelsDriver object 
 obj.setWheelsSpeed(0.5,0.5)			#Drive duckiebot straight
-time.sleep(5)						#for 5 seconds
+time.sleep(2)						#for 2 seconds
 obj.setWheelsSpeed(0.0,0.0)			#Stop duckiebot
 
+
+
+###########stop the vehicle when program exits
+obj.setWheelsSpeed(0.0,0.0)         #Stop duckiebot
